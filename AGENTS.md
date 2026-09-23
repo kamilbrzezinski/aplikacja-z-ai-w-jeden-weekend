@@ -55,7 +55,9 @@ npm run build
 
 - Dla zadania wieloetapowego utwórz krótki plan i aktualizuj go po każdym istotnym etapie. Drobna, oczywista zmiana nie wymaga osobnego planu.
 - Realizuj jedno GitHub Issue jako małą, skupioną zmianę wraz z dotyczącymi jej testami. Po osiągnięciu kamienia milowego zaktualizuj status zadań i zapisz ujawnione ryzyka przed rozpoczęciem kolejnego etapu.
-- Gdy użytkownik potwierdzi implementację, wykonaj commit i push, zamknij odpowiadające GitHub Issue oraz zatrzymaj działający serwer aplikacji.
+- Każdą nową funkcjonalność implementuj na osobnym branchu utworzonym z aktualnej głównej gałęzi; nie pracuj nad nią bezpośrednio na głównym branchu.
+- Po zakończeniu implementacji nowej funkcjonalności i przejściu wymaganych kontroli wykonaj commit, push i otwórz Pull Request do głównej gałęzi. Pozostaw PR oraz odpowiadające mu GitHub Issue otwarte do ręcznej weryfikacji użytkownika.
+- Dopiero po wyraźnym potwierdzeniu użytkownika zmerguj Pull Request, zamknij odpowiadające GitHub Issue i zatrzymaj działający serwer aplikacji. Dla zmian realizowanych bez Pull Requesta commit i push wykonuj dopiero po potwierdzeniu użytkownika, chyba że użytkownik wyraźnie poleci inaczej.
 - Wprowadzaj małe, skupione zmiany. Nie wykonuj przy okazji refaktoryzacji, zmian formatowania ani porządków niezwiązanych z zadaniem.
 - Zachowuj istniejące zmiany użytkownika i nie cofaj ich bez wyraźnej prośby.
 - Przed dodaniem zależności sprawdź, czy problem można rozwiązać używanym już stosem lub małym fragmentem własnego kodu. Nie dodawaj zbędnych zależności; każdą nową zależność uzasadnij.
