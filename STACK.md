@@ -42,6 +42,18 @@ Implementacja musi obsługiwać:
 - upuszczanie w pustej kolumnie;
 - anulowanie rozpoczętego przeciągania bez zmiany stanu.
 
+Spike z `Z2` potwierdził następujący kontrakt integracyjny dla przypiętych wersji
+pakietów: `onDragStart` zapisuje migawkę zatwierdzonych kolumn, a `onDragOver`
+aktualizuje wyłącznie lokalny układ przejściowy przez `move()`. Poprawne
+`onDragEnd` wylicza identyfikator zadania, docelową lokalizację i indeks, po czym
+wysyła jedną semantyczną akcję do reducera. Anulowanie albo upuszczenie poza
+poprawnym celem przywraca migawkę bez akcji.
+
+Reducer z `Z4` rozszerzy tę akcję o wygenerowany poza reducerem `updatedAt`.
+Warstwa zapisu z `Z5`, podłączona docelowo do planszy w `Z9`, będzie obserwować
+wyłącznie zatwierdzony stan domenowy, dlatego przejściowe aktualizacje
+`onDragOver` nie trafią do `localStorage`.
+
 ## 4. Formularze i style
 
 - Formularz zadania będzie zwykłym kontrolowanym formularzem React. Ze względu na małą liczbę pól nie będzie używana osobna biblioteka formularzy.

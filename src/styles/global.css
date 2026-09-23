@@ -15,8 +15,13 @@
   --color-text: #1d2a24;
   --color-text-muted: #58635c;
   --color-surface: #fffdf7;
+  --color-surface-muted: #f2f0e7;
+  --color-board: #f7f5ed;
   --color-border: #d9d9ce;
+  --color-border-strong: #b9bdb2;
   --color-accent: #316b4d;
+  --color-accent-soft: #e4efe7;
+  --color-focus: #9b5f17;
   --shadow-card: 0 1.5rem 4rem rgb(42 55 47 / 12%);
 }
 
