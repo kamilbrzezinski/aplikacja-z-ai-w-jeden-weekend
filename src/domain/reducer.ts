@@ -111,6 +111,14 @@ function editTask(
     return state;
   }
 
+  if (
+    task.title === changes.title &&
+    task.priority === changes.priority &&
+    task.durationMinutes === changes.durationMinutes
+  ) {
+    return state;
+  }
+
   return {
     ...state,
     tasks: {

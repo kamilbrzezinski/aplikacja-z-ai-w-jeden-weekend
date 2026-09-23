@@ -131,6 +131,25 @@ describe('appReducer task lifecycle', () => {
     expect(result.columns).toBe(state.columns);
   });
 
+  it('returns the same state when edited data is unchanged', () => {
+    const task = createTask('unchanged');
+    const state = createState({ backlog: [task.id] }, [task]);
+
+    const result = appReducer(state, {
+      type: 'task/edited',
+      taskId: task.id,
+      changes: {
+        title: task.title,
+        priority: task.priority,
+        durationMinutes: task.durationMinutes,
+      },
+      updatedAt: UPDATED_AT,
+    });
+
+    expect(result).toBe(state);
+    expect(result.tasks[task.id]?.updatedAt).toBe(CREATED_AT);
+  });
+
   it.each([
     { title: '   ', durationMinutes: 30 },
     { title: 'Poprawny tytuł', durationMinutes: 16 },

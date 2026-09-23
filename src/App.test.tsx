@@ -6,11 +6,19 @@ import {
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
 import { App } from './App';
+import { STORAGE_KEY } from './storage/appStateStorage';
 
-afterEach(cleanup);
+beforeEach(() => {
+  window.localStorage.removeItem(STORAGE_KEY);
+});
+
+afterEach(() => {
+  cleanup();
+  window.localStorage.removeItem(STORAGE_KEY);
+});
 
 describe('App', () => {
   it('places the add form before an initially empty backlog', () => {

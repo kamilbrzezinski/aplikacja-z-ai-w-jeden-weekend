@@ -149,6 +149,28 @@ describe('AppStateProvider', () => {
     expect(storage.setItem).not.toHaveBeenCalled();
   });
 
+  it('does not write when edited task data is unchanged', () => {
+    const state = createEmptyAppState();
+    const task = createTask('first');
+    state.tasks.first = task;
+    state.columns.backlog = ['first'];
+    const storage = createFakeStorage(JSON.stringify(state));
+    renderProvider(storage);
+
+    dispatch({
+      type: 'task/edited',
+      taskId: task.id,
+      changes: {
+        title: task.title,
+        priority: task.priority,
+        durationMinutes: task.durationMinutes,
+      },
+      updatedAt: UPDATED_AT,
+    });
+
+    expect(storage.setItem).not.toHaveBeenCalled();
+  });
+
   it('keeps a corrupted raw entry until the first change replaces it', () => {
     const corrupted = '{"schemaVersion":1,"tasks":';
     const storage = createFakeStorage(corrupted);
