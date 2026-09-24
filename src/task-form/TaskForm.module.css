@@ -5,6 +5,14 @@
   align-items: start;
 }
 
+.form[data-layout='stacked'] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.form[data-layout='stacked'] .actions {
+  grid-column: auto;
+}
+
 .field {
   display: grid;
   gap: 0.45rem;

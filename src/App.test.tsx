@@ -10,7 +10,46 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { App } from './App';
+import {
+  createEmptyAppState,
+  dayLocations,
+  dayNames,
+  type AppState,
+  type StoredTask,
+} from './domain/model';
 import { STORAGE_KEY } from './storage/appStateStorage';
+
+const TIMESTAMP = '2026-09-24T08:00:00.000Z';
+
+function createStoredTask(
+  id: string,
+  overrides: Partial<StoredTask> = {},
+): StoredTask {
+  return {
+    id,
+    title: `Zadanie ${id}`,
+    priority: 'medium',
+    durationMinutes: 30,
+    status: 'active',
+    createdAt: TIMESTAMP,
+    updatedAt: TIMESTAMP,
+    ...overrides,
+  };
+}
+
+function storeState(state: AppState) {
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+async function openAddTaskForm(user: ReturnType<typeof userEvent.setup>) {
+  const trigger = screen.getByRole('button', {
+    name: 'Dodaj zadanie',
+  });
+
+  await user.click(trigger);
+
+  return trigger;
+}
 
 beforeEach(() => {
   window.localStorage.removeItem(STORAGE_KEY);
@@ -23,27 +62,170 @@ afterEach(() => {
 });
 
 describe('App', () => {
-  it('places the add form before an initially empty backlog', () => {
+  it('opens the add form above an empty backlog and restores focus when cancelled', async () => {
+    const user = userEvent.setup();
     render(<App />);
+
+    const trigger = screen.getByRole('button', {
+      name: 'Dodaj zadanie',
+    });
+    const emptyAction = screen.getByRole('button', {
+      name: 'Dodaj pierwsze zadanie',
+    });
+
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    expect(
+      screen.queryByRole('heading', { name: 'Dodaj zadanie' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Tu pojawią się zadania, które czekają na zaplanowanie.',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Liczba zadań: 0')).toBeInTheDocument();
+
+    await user.click(trigger);
 
     const addHeading = screen.getByRole('heading', { name: 'Dodaj zadanie' });
     const backlogHeading = screen.getByRole('heading', {
       name: 'Do zaplanowania',
     });
 
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('textbox', { name: 'Nazwa' })).toHaveFocus();
     expect(
       addHeading.compareDocumentPosition(backlogHeading) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
+
+    await user.click(screen.getByRole('button', { name: 'Anuluj' }));
+
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger).toHaveFocus();
+
+    await user.click(emptyAction);
+
+    expect(screen.getByRole('textbox', { name: 'Nazwa' })).toHaveFocus();
+  });
+
+  it('renders all seven empty day columns as visible targets with zero summaries', () => {
+    render(<App />);
+
     expect(
-      screen.getByText('Nie masz jeszcze zadań. Dodaj pierwsze powyżej.'),
+      screen.getByRole('region', {
+        name: 'Od poniedziałku do niedzieli',
+      }),
     ).toBeInTheDocument();
-    expect(screen.getByLabelText('Liczba zadań: 0')).toBeInTheDocument();
+    expect(screen.getByLabelText('Kolumny dni tygodnia')).toHaveAttribute(
+      'tabindex',
+      '0',
+    );
+
+    for (const day of dayLocations) {
+      const column = screen.getByRole('region', { name: dayNames[day] });
+
+      expect(
+        within(column).getByText('Upuść zadanie tutaj'),
+      ).toBeInTheDocument();
+      expect(
+        within(column).getByText('Zaplanowano: 0 min'),
+      ).toBeInTheDocument();
+      expect(within(column).getByText('Pozostało: 0 min')).toBeInTheDocument();
+    }
+  });
+
+  it('renders tasks in stored column order and excludes completed time from remaining', () => {
+    const state = createEmptyAppState();
+    const activeTask = createStoredTask('active', {
+      title: 'Pierwsze aktywne',
+      durationMinutes: 90,
+    });
+    const completedTask = createStoredTask('completed', {
+      title: 'Drugie wykonane',
+      durationMinutes: 30,
+      status: 'completed',
+    });
+
+    state.tasks = {
+      [activeTask.id]: activeTask,
+      [completedTask.id]: completedTask,
+    };
+    state.columns.wednesday = [activeTask.id, completedTask.id];
+    storeState(state);
+
+    render(<App />);
+
+    const wednesday = screen.getByRole('region', { name: 'Środa' });
+    const cards = within(wednesday).getAllByRole('article');
+
+    expect(cards.map((card) => card.getAttribute('aria-label'))).toEqual([
+      'Zadanie: Pierwsze aktywne',
+      'Zadanie: Drugie wykonane',
+    ]);
+    expect(
+      within(wednesday).getByText('Zaplanowano: 2 godz.'),
+    ).toBeInTheDocument();
+    expect(
+      within(wednesday).getByText('Pozostało: 1 godz. 30 min'),
+    ).toBeInTheDocument();
+  });
+
+  it('updates a day summary immediately after changing status and duration', async () => {
+    const user = userEvent.setup();
+    const state = createEmptyAppState();
+    const task = createStoredTask('planned', {
+      title: 'Zaplanowane zadanie',
+      durationMinutes: 60,
+    });
+
+    state.tasks = { [task.id]: task };
+    state.columns.monday = [task.id];
+    storeState(state);
+
+    render(<App />);
+
+    const monday = screen.getByRole('region', { name: 'Poniedziałek' });
+
+    expect(
+      within(monday).getByText('Zaplanowano: 1 godz.'),
+    ).toBeInTheDocument();
+    expect(within(monday).getByText('Pozostało: 1 godz.')).toBeInTheDocument();
+
+    await user.click(
+      within(monday).getByRole('checkbox', {
+        name: 'Oznacz jako wykonane: Zaplanowane zadanie',
+      }),
+    );
+
+    expect(
+      within(monday).getByText('Zaplanowano: 1 godz.'),
+    ).toBeInTheDocument();
+    expect(within(monday).getByText('Pozostało: 0 min')).toBeInTheDocument();
+
+    await user.click(
+      within(monday).getByRole('button', {
+        name: 'Edytuj: Zaplanowane zadanie',
+      }),
+    );
+    const dialog = screen.getByRole('dialog', { name: 'Popraw szczegóły' });
+    fireEvent.change(
+      within(dialog).getByRole('spinbutton', { name: 'Czas (minuty)' }),
+      { target: { value: '90' } },
+    );
+    await user.click(
+      within(dialog).getByRole('button', { name: 'Zapisz zmiany' }),
+    );
+
+    expect(
+      within(monday).getByText('Zaplanowano: 1 godz. 30 min'),
+    ).toBeInTheDocument();
+    expect(within(monday).getByText('Pozostało: 0 min')).toBeInTheDocument();
   });
 
   it('adds a valid task and edits every field in a populated dialog', async () => {
     const user = userEvent.setup();
     render(<App />);
+    await openAddTaskForm(user);
 
     await user.type(
       screen.getByRole('textbox', { name: 'Nazwa' }),
@@ -104,6 +286,7 @@ describe('App', () => {
   it('cancels editing without saving and restores focus', async () => {
     const user = userEvent.setup();
     render(<App />);
+    await openAddTaskForm(user);
 
     await user.type(
       screen.getByRole('textbox', { name: 'Nazwa' }),
@@ -131,6 +314,7 @@ describe('App', () => {
   it('handles the native dialog cancel event without saving', async () => {
     const user = userEvent.setup();
     render(<App />);
+    await openAddTaskForm(user);
 
     await user.type(
       screen.getByRole('textbox', { name: 'Nazwa' }),
@@ -157,6 +341,7 @@ describe('App', () => {
   it('marks a task as completed and allows restoring it without moving it', async () => {
     const user = userEvent.setup();
     render(<App />);
+    await openAddTaskForm(user);
 
     await user.type(
       screen.getByRole('textbox', { name: 'Nazwa' }),
@@ -205,6 +390,7 @@ describe('App', () => {
       .mockReturnValueOnce(false)
       .mockReturnValueOnce(true);
     render(<App />);
+    await openAddTaskForm(user);
 
     await user.type(
       screen.getByRole('textbox', { name: 'Nazwa' }),
@@ -232,6 +418,7 @@ describe('App', () => {
   it('keeps a long title and all card actions usable in the compact layout', async () => {
     const user = userEvent.setup();
     render(<App />);
+    await openAddTaskForm(user);
 
     const longTitle =
       'Bardzo długi tytuł zadania, który ma się bezpiecznie zawinąć i nie może rozbić układu karty nawet w wąskiej kolumnie';

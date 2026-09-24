@@ -26,6 +26,7 @@ interface TaskFormErrors {
 
 interface TaskFormProps {
   initialValues?: TaskFormValues;
+  layout?: 'responsive' | 'stacked';
   submitLabel: string;
   onSubmit: (values: TaskFormValues) => void;
   onCancel?: () => void;
@@ -90,6 +91,7 @@ function validateDraft(draft: TaskFormDraft): {
 
 export function TaskForm({
   initialValues = defaultTaskFormValues,
+  layout = 'responsive',
   submitLabel,
   onSubmit,
   onCancel,
@@ -129,7 +131,12 @@ export function TaskForm({
   };
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit} noValidate>
+    <form
+      className={styles.form}
+      data-layout={layout}
+      onSubmit={handleSubmit}
+      noValidate
+    >
       <div className={styles.field}>
         <label htmlFor={titleId}>Nazwa</label>
         <input

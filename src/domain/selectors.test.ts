@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { createEmptyAppState, type StoredTask } from './model';
-import { selectDaySummary } from './selectors';
+import { selectDaySummary, selectTasksByLocation } from './selectors';
 
 function createTask(
   id: string,
@@ -55,5 +55,28 @@ describe('selectDaySummary', () => {
       plannedMinutes: 0,
       remainingMinutes: 0,
     });
+  });
+});
+
+describe('selectTasksByLocation', () => {
+  it('returns tasks in the order stored for the selected column', () => {
+    const first = createTask('first', 30, 'active');
+    const second = createTask('second', 60, 'completed');
+    const state = createEmptyAppState();
+
+    state.tasks = { first, second };
+    state.columns.friday = [second.id, first.id];
+
+    expect(selectTasksByLocation(state, 'friday')).toEqual([second, first]);
+  });
+
+  it('ignores a stale column identifier without changing the stored order', () => {
+    const first = createTask('first', 30, 'active');
+    const state = createEmptyAppState();
+
+    state.tasks = { first };
+    state.columns.backlog = ['missing', first.id];
+
+    expect(selectTasksByLocation(state, 'backlog')).toEqual([first]);
   });
 });

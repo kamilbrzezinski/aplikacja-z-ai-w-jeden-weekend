@@ -1,0 +1,190 @@
+.column {
+  --day-accent: var(--color-accent);
+  --day-surface: var(--color-accent-soft);
+
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.column[data-variant='backlog'] {
+  margin-top: 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-panel);
+  background: var(--color-surface);
+}
+
+.column[data-variant='day'] {
+  min-height: 25rem;
+  border-left: 1px solid var(--color-border);
+}
+
+.column[data-variant='day']:first-child {
+  border-left: 0;
+}
+
+.column[data-location='monday'] {
+  --day-accent: var(--color-day-monday);
+  --day-surface: var(--color-day-monday-soft);
+}
+
+.column[data-location='tuesday'] {
+  --day-accent: var(--color-day-tuesday);
+  --day-surface: var(--color-day-tuesday-soft);
+}
+
+.column[data-location='wednesday'] {
+  --day-accent: var(--color-day-wednesday);
+  --day-surface: var(--color-day-wednesday-soft);
+}
+
+.column[data-location='thursday'] {
+  --day-accent: var(--color-day-thursday);
+  --day-surface: var(--color-day-thursday-soft);
+}
+
+.column[data-location='friday'] {
+  --day-accent: var(--color-day-friday);
+  --day-surface: var(--color-day-friday-soft);
+}
+
+.column[data-location='saturday'] {
+  --day-accent: var(--color-day-saturday);
+  --day-surface: var(--color-day-saturday-soft);
+}
+
+.column[data-location='sunday'] {
+  --day-accent: var(--color-day-sunday);
+  --day-surface: var(--color-day-sunday-soft);
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 3.25rem;
+  padding: 0.8rem 0.85rem;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.column[data-variant='day'] .heading {
+  border-top: 3px solid var(--day-accent);
+  background: var(--day-surface);
+}
+
+.heading h2,
+.heading h3 {
+  margin: 0;
+  font-size: 0.92rem;
+  line-height: 1.3;
+}
+
+.column[data-variant='backlog'] .heading h2 {
+  font-size: 1.05rem;
+}
+
+.count {
+  display: grid;
+  flex: 0 0 auto;
+  min-width: 1.65rem;
+  height: 1.65rem;
+  padding: 0 0.35rem;
+  place-items: center;
+  border-radius: 999px;
+  color: var(--color-text-muted);
+  background: rgb(255 255 255 / 68%);
+  font-size: 0.74rem;
+  font-weight: 750;
+}
+
+.taskArea {
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  padding: 0.65rem;
+}
+
+.column[data-variant='day'] .taskArea {
+  min-height: 17rem;
+}
+
+.taskList {
+  display: grid;
+  width: 100%;
+  align-content: start;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.column[data-variant='backlog'] .taskList {
+  grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+}
+
+.emptyState {
+  display: grid;
+  width: 100%;
+  min-height: 8rem;
+  place-content: center;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: var(--radius-control);
+  color: var(--color-text-muted);
+  background: var(--color-surface-muted);
+  text-align: center;
+}
+
+.column[data-variant='day'] .emptyState {
+  min-height: 100%;
+  color: var(--day-accent);
+  background: var(--day-surface);
+  font-weight: 700;
+}
+
+.emptyState p {
+  max-width: 28rem;
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.emptyState button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0.55rem 0.8rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-control);
+  color: var(--color-text);
+  background: var(--color-surface);
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.emptyState button:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.emptyState button:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.35rem;
+  min-height: 3.5rem;
+  align-content: center;
+  padding: 0.7rem 0.8rem;
+  border-top: 1px solid var(--color-border);
+  color: var(--color-text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.45;
+}
