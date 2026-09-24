@@ -1,26 +1,39 @@
 import { useRef, useState, type Dispatch } from 'react';
 
 import styles from '../App.module.css';
-import {
-  formatDuration,
-  type AppState,
-  type Priority,
-  type StoredTask,
-} from '../domain/model';
+import { type AppState, type StoredTask } from '../domain/model';
 import type { AppAction } from '../domain/reducer';
 import { TaskEditDialog } from '../task-form/TaskEditDialog';
 import { TaskForm, type TaskFormValues } from '../task-form/TaskForm';
+import { TaskCard, type TaskCardVariant } from './TaskCard';
+import managementStyles from './TaskManagement.module.css';
 
 interface TaskManagementProps {
   state: AppState;
   dispatch: Dispatch<AppAction>;
 }
 
-const priorityLabels: Record<Priority, string> = {
-  low: 'Niski',
-  medium: 'Średni',
-  high: 'Wysoki',
-};
+const cardVariantOptions: Array<{
+  value: TaskCardVariant;
+  name: string;
+  description: string;
+}> = [
+  {
+    value: 'calm',
+    name: 'A · Spokojny',
+    description: 'Przestronny, neutralny i skupiony na treści.',
+  },
+  {
+    value: 'compact',
+    name: 'B · Kompaktowy',
+    description: 'Gęsty układ do szybkiego przeglądania listy.',
+  },
+  {
+    value: 'bold',
+    name: 'C · Wyrazisty',
+    description: 'Mocniej eksponuje priorytet i charakter zadania.',
+  },
+];
 
 function createTask(values: TaskFormValues): StoredTask {
   const timestamp = new Date().toISOString();
@@ -36,6 +49,7 @@ function createTask(values: TaskFormValues): StoredTask {
 
 export function TaskManagement({ state, dispatch }: TaskManagementProps) {
   const [editedTaskId, setEditedTaskId] = useState<string | null>(null);
+  const [cardVariant, setCardVariant] = useState<TaskCardVariant>('calm');
   const editTriggerRef = useRef<HTMLButtonElement | null>(null);
   const backlogTasks = state.columns.backlog.flatMap((taskId) => {
     const task = state.tasks[taskId];
@@ -54,6 +68,25 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
       changes: values,
       updatedAt: new Date().toISOString(),
     });
+  };
+
+  const changeTaskStatus = (task: StoredTask) => {
+    dispatch({
+      type: 'task/statusChanged',
+      taskId: task.id,
+      status: task.status === 'active' ? 'completed' : 'active',
+      updatedAt: new Date().toISOString(),
+    });
+  };
+
+  const deleteTask = (task: StoredTask) => {
+    const shouldDelete = window.confirm(
+      `Usunąć zadanie „${task.title}”? Tej operacji nie można cofnąć.`,
+    );
+
+    if (shouldDelete) {
+      dispatch({ type: 'task/deleted', taskId: task.id });
+    }
   };
 
   return (
@@ -87,6 +120,37 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
           </span>
         </div>
 
+        <fieldset className={managementStyles.variantPicker}>
+          <legend>Wariant wyglądu kart</legend>
+          <p className={managementStyles.variantHint}>
+            Wybór roboczy — nie zmienia danych
+          </p>
+          <div className={managementStyles.variantOptions}>
+            {cardVariantOptions.map((option) => (
+              <label
+                key={option.value}
+                className={managementStyles.variantOption}
+              >
+                <input
+                  type="radio"
+                  name="card-variant"
+                  value={option.value}
+                  checked={cardVariant === option.value}
+                  onChange={() => {
+                    setCardVariant(option.value);
+                  }}
+                />
+                <span className={managementStyles.variantName}>
+                  {option.name}
+                </span>
+                <span className={managementStyles.variantDescription}>
+                  {option.description}
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
         {backlogTasks.length === 0 ? (
           <p className={styles.emptyState}>
             Nie masz jeszcze zadań. Dodaj pierwsze powyżej.
@@ -94,25 +158,17 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
         ) : (
           <ul className={styles.taskList}>
             {backlogTasks.map((task) => (
-              <li key={task.id} className={styles.taskPreview}>
-                <span className={styles.taskData}>
-                  <span className={styles.taskTitle}>{task.title}</span>
-                  <span className={styles.taskMeta}>
-                    Priorytet: {priorityLabels[task.priority]} · Czas:{' '}
-                    {formatDuration(task.durationMinutes)}
-                  </span>
-                </span>
-                <button
-                  type="button"
-                  className={styles.editButton}
-                  aria-label={`Edytuj: ${task.title}`}
-                  onClick={(event) => {
-                    editTriggerRef.current = event.currentTarget;
-                    setEditedTaskId(task.id);
+              <li key={task.id}>
+                <TaskCard
+                  task={task}
+                  variant={cardVariant}
+                  onEdit={(taskId, trigger) => {
+                    editTriggerRef.current = trigger;
+                    setEditedTaskId(taskId);
                   }}
-                >
-                  Edytuj
-                </button>
+                  onStatusChange={changeTaskStatus}
+                  onDelete={deleteTask}
+                />
               </li>
             ))}
           </ul>

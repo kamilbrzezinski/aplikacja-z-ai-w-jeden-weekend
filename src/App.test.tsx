@@ -3,10 +3,11 @@ import {
   fireEvent,
   render,
   screen,
+  waitFor,
   within,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { App } from './App';
 import { STORAGE_KEY } from './storage/appStateStorage';
@@ -18,6 +19,7 @@ beforeEach(() => {
 afterEach(() => {
   cleanup();
   window.localStorage.removeItem(STORAGE_KEY);
+  vi.restoreAllMocks();
 });
 
 describe('App', () => {
@@ -58,9 +60,8 @@ describe('App', () => {
     await user.click(screen.getByRole('button', { name: 'Dodaj zadanie' }));
 
     expect(screen.getByText('Prezentacja')).toBeInTheDocument();
-    expect(
-      screen.getByText('Priorytet: Wysoki · Czas: 2 godz.'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Wysoki priorytet')).toBeInTheDocument();
+    expect(screen.getByText('2 godz.')).toBeInTheDocument();
     expect(screen.getByLabelText('Liczba zadań: 1')).toBeInTheDocument();
 
     const editTrigger = screen.getByRole('button', {
@@ -91,9 +92,8 @@ describe('App', () => {
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(screen.getByText('Prezentacja kwartalna')).toBeInTheDocument();
-    expect(
-      screen.getByText('Priorytet: Niski · Czas: 45 min'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Niski priorytet')).toBeInTheDocument();
+    expect(screen.getByText('45 min')).toBeInTheDocument();
     expect(
       screen.getByRole('button', {
         name: 'Edytuj: Prezentacja kwartalna',
@@ -152,5 +152,110 @@ describe('App', () => {
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
     expect(screen.getByText('Zamknij Esc')).toBeInTheDocument();
     expect(editTrigger).toHaveFocus();
+  });
+
+  it('marks a task as completed and allows restoring it without moving it', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    await user.type(
+      screen.getByRole('textbox', { name: 'Nazwa' }),
+      'Sprawdzić status',
+    );
+    await user.click(screen.getByRole('button', { name: 'Dodaj zadanie' }));
+
+    const card = screen.getByRole('article', {
+      name: 'Zadanie: Sprawdzić status',
+    });
+    const completeControl = screen.getByRole('checkbox', {
+      name: 'Oznacz jako wykonane: Sprawdzić status',
+    });
+
+    await user.click(completeControl);
+
+    expect(card).toHaveAttribute('data-status', 'completed');
+    expect(screen.getByText('Wykonane')).toBeInTheDocument();
+    expect(
+      screen.getByRole('checkbox', {
+        name: 'Oznacz jako niewykonane: Sprawdzić status',
+      }),
+    ).toBeChecked();
+
+    await waitFor(() => {
+      const savedState = JSON.parse(
+        window.localStorage.getItem(STORAGE_KEY) ?? '{}',
+      ) as { columns?: { backlog?: string[] } };
+      expect(savedState.columns?.backlog).toHaveLength(1);
+    });
+
+    await user.click(
+      screen.getByRole('checkbox', {
+        name: 'Oznacz jako niewykonane: Sprawdzić status',
+      }),
+    );
+
+    expect(card).toHaveAttribute('data-status', 'active');
+    expect(screen.getByText('Do zrobienia')).toBeInTheDocument();
+  });
+
+  it('keeps a task when deletion is cancelled and removes it after confirmation', async () => {
+    const user = userEvent.setup();
+    const confirm = vi
+      .spyOn(window, 'confirm')
+      .mockReturnValueOnce(false)
+      .mockReturnValueOnce(true);
+    render(<App />);
+
+    await user.type(
+      screen.getByRole('textbox', { name: 'Nazwa' }),
+      'Decyzja o usunięciu',
+    );
+    await user.click(screen.getByRole('button', { name: 'Dodaj zadanie' }));
+
+    const deleteButton = screen.getByRole('button', {
+      name: 'Usuń: Decyzja o usunięciu',
+    });
+
+    await user.click(deleteButton);
+
+    expect(confirm).toHaveBeenLastCalledWith(
+      'Usunąć zadanie „Decyzja o usunięciu”? Tej operacji nie można cofnąć.',
+    );
+    expect(screen.getByText('Decyzja o usunięciu')).toBeInTheDocument();
+
+    await user.click(deleteButton);
+
+    expect(screen.queryByText('Decyzja o usunięciu')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('Liczba zadań: 0')).toBeInTheDocument();
+  });
+
+  it('switches all three card variants without changing the task data', async () => {
+    const user = userEvent.setup();
+    render(<App />);
+
+    const longTitle =
+      'Bardzo długi tytuł zadania, który ma się bezpiecznie zawinąć i nie może rozbić układu karty nawet w wąskiej kolumnie';
+    await user.type(screen.getByRole('textbox', { name: 'Nazwa' }), longTitle);
+    await user.click(screen.getByRole('button', { name: 'Dodaj zadanie' }));
+
+    const card = screen.getByRole('article', {
+      name: `Zadanie: ${longTitle}`,
+    });
+
+    expect(card).toHaveAttribute('data-card-variant', 'calm');
+    expect(screen.getByRole('radio', { name: /A · Spokojny/ })).toBeChecked();
+
+    await user.click(screen.getByRole('radio', { name: /B · Kompaktowy/ }));
+    expect(card).toHaveAttribute('data-card-variant', 'compact');
+    expect(screen.getByText(longTitle)).toBeInTheDocument();
+
+    await user.click(screen.getByRole('radio', { name: /C · Wyrazisty/ }));
+    expect(card).toHaveAttribute('data-card-variant', 'bold');
+    expect(
+      screen.getByRole('button', { name: `Edytuj: ${longTitle}` }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: `Usuń: ${longTitle}` }),
+    ).toBeInTheDocument();
   });
 });
