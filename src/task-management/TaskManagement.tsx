@@ -1,4 +1,11 @@
-import { useRef, useState, type Dispatch } from 'react';
+import { move } from '@dnd-kit/helpers';
+import {
+  DragDropProvider,
+  type DragEndEvent,
+  type DragOverEvent,
+  type DragStartEvent,
+} from '@dnd-kit/react';
+import { useEffect, useRef, useState, type Dispatch } from 'react';
 
 import styles from '../App.module.css';
 import {
@@ -6,12 +13,15 @@ import {
   dayNames,
   type AppState,
   type StoredTask,
+  type TaskColumns,
+  type TaskLocation,
 } from '../domain/model';
 import type { AppAction } from '../domain/reducer';
-import { selectDaySummary, selectTasksByLocation } from '../domain/selectors';
+import { selectDaySummary } from '../domain/selectors';
 import { TaskEditDialog } from '../task-form/TaskEditDialog';
 import { TaskForm, type TaskFormValues } from '../task-form/TaskForm';
 import { TaskColumn } from './TaskColumn';
+import { cloneTaskColumns, createMoveTaskAction } from './dnd';
 
 interface TaskManagementProps {
   state: AppState;
@@ -35,8 +45,106 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
   const [editedTaskId, setEditedTaskId] = useState<string | null>(null);
   const addTaskTriggerRef = useRef<HTMLButtonElement | null>(null);
   const editTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const backlogTasks = selectTasksByLocation(state, 'backlog');
+  const [draftColumns, setDraftColumns] = useState<TaskColumns>(() =>
+    cloneTaskColumns(state.columns),
+  );
+  const snapshotRef = useRef(cloneTaskColumns(state.columns));
+  const draftRef = useRef(draftColumns);
+  const isDraggingRef = useRef(false);
   const editedTask = editedTaskId ? (state.tasks[editedTaskId] ?? null) : null;
+
+  const updateDraft = (columns: TaskColumns) => {
+    draftRef.current = columns;
+    setDraftColumns(columns);
+  };
+
+  useEffect(() => {
+    if (!isDraggingRef.current) {
+      updateDraft(cloneTaskColumns(state.columns));
+    }
+  }, [state.columns]);
+
+  const tasksIn = (location: TaskLocation) =>
+    draftColumns[location].flatMap((taskId) => {
+      const task = state.tasks[taskId];
+
+      return task ? [task] : [];
+    });
+
+  const restoreDragHandleFocus = (taskId: string) => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        document.getElementById(`drag-handle-${taskId}`)?.focus();
+      });
+    });
+  };
+
+  const handleDragStart = (event: DragStartEvent) => {
+    const sourceId = event.operation.source?.id;
+
+    if (typeof sourceId !== 'string' || !state.tasks[sourceId]) {
+      return;
+    }
+
+    isDraggingRef.current = true;
+    snapshotRef.current = cloneTaskColumns(state.columns);
+    updateDraft(cloneTaskColumns(state.columns));
+  };
+
+  const handleDragOver = (event: DragOverEvent) => {
+    if (!isDraggingRef.current) {
+      return;
+    }
+
+    const nextDraft = move(draftRef.current, event);
+
+    if (nextDraft !== draftRef.current) {
+      updateDraft(nextDraft);
+    }
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const sourceId = event.operation.source?.id;
+    const targetId = event.operation.target?.id;
+    const snapshot = snapshotRef.current;
+
+    isDraggingRef.current = false;
+
+    if (typeof sourceId !== 'string') {
+      updateDraft(cloneTaskColumns(snapshot));
+      return;
+    }
+
+    if (event.canceled || targetId == null) {
+      updateDraft(cloneTaskColumns(snapshot));
+      restoreDragHandleFocus(sourceId);
+      return;
+    }
+
+    let finalDraft = draftRef.current;
+    const updatedAt = new Date().toISOString();
+    let action = createMoveTaskAction(
+      snapshot,
+      finalDraft,
+      sourceId,
+      updatedAt,
+    );
+
+    if (!action) {
+      finalDraft = move(draftRef.current, event);
+      action = createMoveTaskAction(snapshot, finalDraft, sourceId, updatedAt);
+    }
+
+    if (!action) {
+      updateDraft(cloneTaskColumns(snapshot));
+      restoreDragHandleFocus(sourceId);
+      return;
+    }
+
+    dispatch(action);
+    updateDraft(finalDraft);
+    restoreDragHandleFocus(sourceId);
+  };
 
   const addTask = (values: TaskFormValues) => {
     dispatch({ type: 'task/added', task: createTask(values) });
@@ -126,55 +234,67 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
         </section>
       ) : null}
 
-      <TaskColumn
-        location="backlog"
-        title="Do zaplanowania"
-        tasks={backlogTasks}
-        emptyMessage="Tu pojawią się zadania, które czekają na zaplanowanie."
-        emptyActionLabel="Dodaj pierwsze zadanie"
-        onEmptyAction={openAddForm}
-        onEdit={(taskId, trigger) => {
-          editTriggerRef.current = trigger;
-          setEditedTaskId(taskId);
-        }}
-        onStatusChange={changeTaskStatus}
-        onDelete={deleteTask}
-      />
+      <p id="dnd-instructions" className={styles.visuallyHidden}>
+        Aby przenieść zadanie klawiaturą, ustaw fokus na uchwycie, rozpocznij
+        spacją lub Enterem, poruszaj strzałkami i zatwierdź spacją albo Enterem.
+        Naciśnij Esc, aby anulować.
+      </p>
 
-      <section className={styles.week} aria-labelledby="week-heading">
-        <div className={styles.weekHeading}>
-          <div>
-            <p className={styles.sectionEyebrow}>Plan tygodnia</p>
-            <h2 id="week-heading">Od poniedziałku do niedzieli</h2>
-          </div>
-          <p>Na mniejszych ekranach przewiń planszę poziomo.</p>
-        </div>
+      <DragDropProvider
+        onDragStart={handleDragStart}
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+      >
+        <TaskColumn
+          location="backlog"
+          title="Do zaplanowania"
+          tasks={tasksIn('backlog')}
+          emptyMessage="Tu pojawią się zadania, które czekają na zaplanowanie."
+          emptyActionLabel="Dodaj pierwsze zadanie"
+          onEmptyAction={openAddForm}
+          onEdit={(taskId, trigger) => {
+            editTriggerRef.current = trigger;
+            setEditedTaskId(taskId);
+          }}
+          onStatusChange={changeTaskStatus}
+          onDelete={deleteTask}
+        />
 
-        <div
-          className={styles.weekScroller}
-          tabIndex={0}
-          aria-label="Kolumny dni tygodnia"
-        >
-          <div className={styles.weekColumns}>
-            {dayLocations.map((day) => (
-              <TaskColumn
-                key={day}
-                location={day}
-                title={dayNames[day]}
-                tasks={selectTasksByLocation(state, day)}
-                summary={selectDaySummary(state, day)}
-                emptyMessage="Upuść zadanie tutaj"
-                onEdit={(taskId, trigger) => {
-                  editTriggerRef.current = trigger;
-                  setEditedTaskId(taskId);
-                }}
-                onStatusChange={changeTaskStatus}
-                onDelete={deleteTask}
-              />
-            ))}
+        <section className={styles.week} aria-labelledby="week-heading">
+          <div className={styles.weekHeading}>
+            <div>
+              <p className={styles.sectionEyebrow}>Plan tygodnia</p>
+              <h2 id="week-heading">Od poniedziałku do niedzieli</h2>
+            </div>
+            <p>Na mniejszych ekranach przewiń planszę poziomo.</p>
           </div>
-        </div>
-      </section>
+
+          <div
+            className={styles.weekScroller}
+            tabIndex={0}
+            aria-label="Kolumny dni tygodnia"
+          >
+            <div className={styles.weekColumns}>
+              {dayLocations.map((day) => (
+                <TaskColumn
+                  key={day}
+                  location={day}
+                  title={dayNames[day]}
+                  tasks={tasksIn(day)}
+                  summary={selectDaySummary(state, day)}
+                  emptyMessage="Upuść zadanie tutaj"
+                  onEdit={(taskId, trigger) => {
+                    editTriggerRef.current = trigger;
+                    setEditedTaskId(taskId);
+                  }}
+                  onStatusChange={changeTaskStatus}
+                  onDelete={deleteTask}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
+      </DragDropProvider>
 
       <TaskEditDialog
         task={editedTask}

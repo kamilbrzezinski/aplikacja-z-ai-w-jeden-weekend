@@ -1,3 +1,6 @@
+import { useDroppable } from '@dnd-kit/react';
+import { useSortable } from '@dnd-kit/react/sortable';
+
 import {
   formatDuration,
   type StoredTask,
@@ -5,6 +8,7 @@ import {
 } from '../domain/model';
 import type { DaySummary } from '../domain/selectors';
 import { TaskCard } from './TaskCard';
+import { COLUMN_COLLISION_PRIORITY, TASK_DRAG_TYPE } from './dnd';
 import styles from './TaskColumn.module.css';
 
 interface TaskColumnProps {
@@ -20,6 +24,54 @@ interface TaskColumnProps {
   title: string;
 }
 
+interface SortableTaskCardProps {
+  index: number;
+  location: TaskLocation;
+  onDelete: (task: StoredTask) => void;
+  onEdit: (taskId: string, trigger: HTMLButtonElement) => void;
+  onStatusChange: (task: StoredTask) => void;
+  task: StoredTask;
+}
+
+function SortableTaskCard({
+  index,
+  location,
+  onDelete,
+  onEdit,
+  onStatusChange,
+  task,
+}: SortableTaskCardProps) {
+  const { handleRef, isDragging, isDropping, isDropTarget, ref } = useSortable({
+    id: task.id,
+    index,
+    group: location,
+    type: TASK_DRAG_TYPE,
+    accept: TASK_DRAG_TYPE,
+  });
+
+  return (
+    <li
+      ref={ref}
+      data-task-id={task.id}
+      data-dragging={isDragging || undefined}
+      data-dropping={isDropping || undefined}
+      data-drop-target={isDropTarget || undefined}
+    >
+      <TaskCard
+        compact
+        dragHandleId={`drag-handle-${task.id}`}
+        dragHandleRef={(element) => {
+          handleRef(element);
+        }}
+        task={task}
+        onEdit={onEdit}
+        onStatusChange={onStatusChange}
+        onDelete={onDelete}
+      />
+    </li>
+  );
+}
+
 export function TaskColumn({
   emptyActionLabel,
   emptyMessage,
@@ -32,6 +84,11 @@ export function TaskColumn({
   tasks,
   title,
 }: TaskColumnProps) {
+  const { isDropTarget, ref } = useDroppable({
+    id: location,
+    accept: TASK_DRAG_TYPE,
+    collisionPriority: COLUMN_COLLISION_PRIORITY,
+  });
   const isBacklog = location === 'backlog';
   const headingId = `${location}-heading`;
   const taskCountLabel = isBacklog
@@ -56,7 +113,12 @@ export function TaskColumn({
         </span>
       </header>
 
-      <div className={styles.taskArea}>
+      <div
+        ref={ref}
+        className={styles.taskArea}
+        data-drop-target={isDropTarget || undefined}
+        data-testid={`dropzone-${location}`}
+      >
         {tasks.length === 0 ? (
           <div className={styles.emptyState}>
             <p>{emptyMessage}</p>
@@ -69,16 +131,16 @@ export function TaskColumn({
           </div>
         ) : (
           <ul className={styles.taskList}>
-            {tasks.map((task) => (
-              <li key={task.id}>
-                <TaskCard
-                  compact
-                  task={task}
-                  onEdit={onEdit}
-                  onStatusChange={onStatusChange}
-                  onDelete={onDelete}
-                />
-              </li>
+            {tasks.map((task, index) => (
+              <SortableTaskCard
+                key={task.id}
+                index={index}
+                location={location}
+                task={task}
+                onEdit={onEdit}
+                onStatusChange={onStatusChange}
+                onDelete={onDelete}
+              />
             ))}
           </ul>
         )}

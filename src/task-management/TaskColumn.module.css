@@ -105,6 +105,11 @@
   padding: 0.65rem;
 }
 
+.taskArea[data-drop-target] {
+  background: color-mix(in srgb, var(--day-surface) 75%, transparent);
+  box-shadow: inset 0 0 0 2px var(--day-accent);
+}
+
 .column[data-variant='day'] .taskArea {
   min-height: 17rem;
 }
@@ -117,6 +122,20 @@
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.taskList > li {
+  min-width: 0;
+}
+
+.taskList > li[data-dragging] {
+  opacity: 0.55;
+}
+
+.taskList > li[data-drop-target] {
+  border-radius: var(--radius-card);
+  outline: 2px solid var(--day-accent);
+  outline-offset: 2px;
 }
 
 .column[data-variant='backlog'] .taskList {

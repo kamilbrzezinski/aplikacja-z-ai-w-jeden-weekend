@@ -286,6 +286,30 @@ describe('appReducer moving and reordering', () => {
     expect(result.columns.sunday).toEqual([task.id]);
   });
 
+  it('moves a task between days and from a day back to the backlog', () => {
+    const movedTask = createTask('moved');
+    const existingTask = createTask('existing');
+    const state = createState(
+      { monday: [movedTask.id], friday: [existingTask.id] },
+      [movedTask, existingTask],
+    );
+
+    const movedBetweenDays = moveTask(state, movedTask.id, 'friday', 1);
+    const returnedToBacklog = moveTask(
+      movedBetweenDays,
+      movedTask.id,
+      'backlog',
+      0,
+      NEXT_UPDATED_AT,
+    );
+
+    expect(movedBetweenDays.columns.monday).toEqual([]);
+    expect(movedBetweenDays.columns.friday).toEqual(['existing', 'moved']);
+    expect(returnedToBacklog.columns.friday).toEqual(['existing']);
+    expect(returnedToBacklog.columns.backlog).toEqual(['moved']);
+    expect(returnedToBacklog.tasks.moved?.updatedAt).toBe(NEXT_UPDATED_AT);
+  });
+
   it('clamps a destination index to the available range', () => {
     const firstTask = createTask('first');
     const movedTask = createTask('moved');
