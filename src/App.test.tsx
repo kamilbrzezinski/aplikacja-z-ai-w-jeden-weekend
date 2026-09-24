@@ -229,7 +229,7 @@ describe('App', () => {
     expect(screen.getByLabelText('Liczba zadań: 0')).toBeInTheDocument();
   });
 
-  it('switches all three card variants without changing the task data', async () => {
+  it('keeps a long title and all card actions usable in the compact layout', async () => {
     const user = userEvent.setup();
     render(<App />);
 
@@ -238,19 +238,13 @@ describe('App', () => {
     await user.type(screen.getByRole('textbox', { name: 'Nazwa' }), longTitle);
     await user.click(screen.getByRole('button', { name: 'Dodaj zadanie' }));
 
-    const card = screen.getByRole('article', {
-      name: `Zadanie: ${longTitle}`,
-    });
-
-    expect(card).toHaveAttribute('data-card-variant', 'calm');
-    expect(screen.getByRole('radio', { name: /A · Spokojny/ })).toBeChecked();
-
-    await user.click(screen.getByRole('radio', { name: /B · Kompaktowy/ }));
-    expect(card).toHaveAttribute('data-card-variant', 'compact');
+    expect(
+      screen.getByRole('article', {
+        name: `Zadanie: ${longTitle}`,
+      }),
+    ).toBeInTheDocument();
     expect(screen.getByText(longTitle)).toBeInTheDocument();
-
-    await user.click(screen.getByRole('radio', { name: /C · Wyrazisty/ }));
-    expect(card).toHaveAttribute('data-card-variant', 'bold');
+    expect(screen.queryAllByRole('radio')).toHaveLength(0);
     expect(
       screen.getByRole('button', { name: `Edytuj: ${longTitle}` }),
     ).toBeInTheDocument();

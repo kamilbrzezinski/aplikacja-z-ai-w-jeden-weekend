@@ -5,35 +5,12 @@ import { type AppState, type StoredTask } from '../domain/model';
 import type { AppAction } from '../domain/reducer';
 import { TaskEditDialog } from '../task-form/TaskEditDialog';
 import { TaskForm, type TaskFormValues } from '../task-form/TaskForm';
-import { TaskCard, type TaskCardVariant } from './TaskCard';
-import managementStyles from './TaskManagement.module.css';
+import { TaskCard } from './TaskCard';
 
 interface TaskManagementProps {
   state: AppState;
   dispatch: Dispatch<AppAction>;
 }
-
-const cardVariantOptions: Array<{
-  value: TaskCardVariant;
-  name: string;
-  description: string;
-}> = [
-  {
-    value: 'calm',
-    name: 'A · Spokojny',
-    description: 'Przestronny, neutralny i skupiony na treści.',
-  },
-  {
-    value: 'compact',
-    name: 'B · Kompaktowy',
-    description: 'Gęsty układ do szybkiego przeglądania listy.',
-  },
-  {
-    value: 'bold',
-    name: 'C · Wyrazisty',
-    description: 'Mocniej eksponuje priorytet i charakter zadania.',
-  },
-];
 
 function createTask(values: TaskFormValues): StoredTask {
   const timestamp = new Date().toISOString();
@@ -49,7 +26,6 @@ function createTask(values: TaskFormValues): StoredTask {
 
 export function TaskManagement({ state, dispatch }: TaskManagementProps) {
   const [editedTaskId, setEditedTaskId] = useState<string | null>(null);
-  const [cardVariant, setCardVariant] = useState<TaskCardVariant>('calm');
   const editTriggerRef = useRef<HTMLButtonElement | null>(null);
   const backlogTasks = state.columns.backlog.flatMap((taskId) => {
     const task = state.tasks[taskId];
@@ -120,37 +96,6 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
           </span>
         </div>
 
-        <fieldset className={managementStyles.variantPicker}>
-          <legend>Wariant wyglądu kart</legend>
-          <p className={managementStyles.variantHint}>
-            Wybór roboczy — nie zmienia danych
-          </p>
-          <div className={managementStyles.variantOptions}>
-            {cardVariantOptions.map((option) => (
-              <label
-                key={option.value}
-                className={managementStyles.variantOption}
-              >
-                <input
-                  type="radio"
-                  name="card-variant"
-                  value={option.value}
-                  checked={cardVariant === option.value}
-                  onChange={() => {
-                    setCardVariant(option.value);
-                  }}
-                />
-                <span className={managementStyles.variantName}>
-                  {option.name}
-                </span>
-                <span className={managementStyles.variantDescription}>
-                  {option.description}
-                </span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
-
         {backlogTasks.length === 0 ? (
           <p className={styles.emptyState}>
             Nie masz jeszcze zadań. Dodaj pierwsze powyżej.
@@ -161,7 +106,6 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
               <li key={task.id}>
                 <TaskCard
                   task={task}
-                  variant={cardVariant}
                   onEdit={(taskId, trigger) => {
                     editTriggerRef.current = trigger;
                     setEditedTaskId(taskId);

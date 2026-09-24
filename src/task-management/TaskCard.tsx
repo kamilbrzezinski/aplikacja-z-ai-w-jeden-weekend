@@ -1,11 +1,8 @@
 import { formatDuration, type StoredTask } from '../domain/model';
 import styles from './TaskCard.module.css';
 
-export type TaskCardVariant = 'calm' | 'compact' | 'bold';
-
 interface TaskCardProps {
   task: StoredTask;
-  variant: TaskCardVariant;
   onEdit: (taskId: string, trigger: HTMLButtonElement) => void;
   onDelete: (task: StoredTask) => void;
   onStatusChange: (task: StoredTask) => void;
@@ -19,7 +16,6 @@ const priorityLabels: Record<StoredTask['priority'], string> = {
 
 export function TaskCard({
   task,
-  variant,
   onEdit,
   onDelete,
   onStatusChange,
@@ -31,8 +27,7 @@ export function TaskCard({
 
   return (
     <article
-      className={`${styles.card} ${styles[variant]}`}
-      data-card-variant={variant}
+      className={styles.card}
       data-priority={task.priority}
       data-status={task.status}
       aria-label={`Zadanie: ${task.title}`}
