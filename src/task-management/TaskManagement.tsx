@@ -21,6 +21,7 @@ import { selectDaySummary } from '../domain/selectors';
 import { TaskEditDialog } from '../task-form/TaskEditDialog';
 import { TaskForm, type TaskFormValues } from '../task-form/TaskForm';
 import { TaskColumn } from './TaskColumn';
+import { TaskMoveDialog } from './TaskMoveDialog';
 import { cloneTaskColumns, createMoveTaskAction } from './dnd';
 
 interface TaskManagementProps {
@@ -43,8 +44,10 @@ function createTask(values: TaskFormValues): StoredTask {
 export function TaskManagement({ state, dispatch }: TaskManagementProps) {
   const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [editedTaskId, setEditedTaskId] = useState<string | null>(null);
+  const [movedTaskId, setMovedTaskId] = useState<string | null>(null);
   const addTaskTriggerRef = useRef<HTMLButtonElement | null>(null);
   const editTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const moveTriggerRef = useRef<HTMLButtonElement | null>(null);
   const [draftColumns, setDraftColumns] = useState<TaskColumns>(() =>
     cloneTaskColumns(state.columns),
   );
@@ -52,6 +55,7 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
   const draftRef = useRef(draftColumns);
   const isDraggingRef = useRef(false);
   const editedTask = editedTaskId ? (state.tasks[editedTaskId] ?? null) : null;
+  const movedTask = movedTaskId ? (state.tasks[movedTaskId] ?? null) : null;
 
   const updateDraft = (columns: TaskColumns) => {
     draftRef.current = columns;
@@ -168,6 +172,32 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
     });
   };
 
+  const moveTask = (
+    taskId: string,
+    destination: { columnId: TaskLocation; index: number },
+  ) => {
+    dispatch({
+      type: 'item/moved',
+      itemId: taskId,
+      destination,
+      updatedAt: new Date().toISOString(),
+    });
+  };
+
+  const closeMoveDialog = () => {
+    const taskId = movedTaskId;
+
+    setMovedTaskId(null);
+
+    if (taskId) {
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          document.getElementById(`move-button-${taskId}`)?.focus();
+        });
+      });
+    }
+  };
+
   const changeTaskStatus = (task: StoredTask) => {
     dispatch({
       type: 'task/statusChanged',
@@ -256,6 +286,10 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
             editTriggerRef.current = trigger;
             setEditedTaskId(taskId);
           }}
+          onMove={(taskId, trigger) => {
+            moveTriggerRef.current = trigger;
+            setMovedTaskId(taskId);
+          }}
           onStatusChange={changeTaskStatus}
           onDelete={deleteTask}
         />
@@ -287,6 +321,10 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
                     editTriggerRef.current = trigger;
                     setEditedTaskId(taskId);
                   }}
+                  onMove={(taskId, trigger) => {
+                    moveTriggerRef.current = trigger;
+                    setMovedTaskId(taskId);
+                  }}
                   onStatusChange={changeTaskStatus}
                   onDelete={deleteTask}
                 />
@@ -303,6 +341,13 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
         onClose={() => {
           setEditedTaskId(null);
         }}
+      />
+      <TaskMoveDialog
+        task={movedTask}
+        columns={state.columns}
+        returnFocusRef={moveTriggerRef}
+        onSubmit={moveTask}
+        onClose={closeMoveDialog}
       />
     </main>
   );

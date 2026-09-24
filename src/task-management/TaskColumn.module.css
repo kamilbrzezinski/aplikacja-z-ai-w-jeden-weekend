@@ -158,7 +158,7 @@
 
 .column[data-variant='day'] .emptyState {
   min-height: 100%;
-  color: var(--day-accent);
+  color: var(--color-text);
   background: var(--day-surface);
   font-weight: 700;
 }

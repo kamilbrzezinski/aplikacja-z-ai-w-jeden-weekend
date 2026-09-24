@@ -415,6 +415,147 @@ describe('App', () => {
     expect(screen.getByLabelText('Liczba zadań: 0')).toBeInTheDocument();
   });
 
+  it('moves and reorders a task through the accessible move dialog', async () => {
+    const user = userEvent.setup();
+    const state = createEmptyAppState();
+    const firstTask = createStoredTask('first', { title: 'Pierwsze' });
+    const secondTask = createStoredTask('second', { title: 'Drugie' });
+    const thirdTask = createStoredTask('third', { title: 'Trzecie' });
+
+    state.tasks = {
+      [firstTask.id]: firstTask,
+      [secondTask.id]: secondTask,
+      [thirdTask.id]: thirdTask,
+    };
+    state.columns.backlog = [firstTask.id, secondTask.id, thirdTask.id];
+    storeState(state);
+
+    render(<App />);
+
+    await user.click(
+      screen.getByRole('button', { name: 'Przenieś do…: Trzecie' }),
+    );
+
+    let dialog = screen.getByRole('dialog', { name: 'Przenieś do…' });
+
+    fireEvent(dialog, new Event('cancel', { cancelable: true }));
+
+    expect(
+      screen.queryByRole('dialog', { name: 'Przenieś do…' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Przenieś do…: Trzecie' }),
+    ).toHaveFocus();
+
+    await user.click(
+      screen.getByRole('button', { name: 'Przenieś do…: Trzecie' }),
+    );
+    dialog = screen.getByRole('dialog', { name: 'Przenieś do…' });
+
+    expect(
+      within(dialog).getByText('Teraz: Do zaplanowania, pozycja 3.'),
+    ).toBeInTheDocument();
+    await user.selectOptions(
+      within(dialog).getByRole('combobox', { name: 'Pozycja w kolumnie' }),
+      '1',
+    );
+    await user.click(
+      within(dialog).getByRole('button', { name: 'Przenieś zadanie' }),
+    );
+
+    expect(
+      within(screen.getByRole('region', { name: 'Do zaplanowania' }))
+        .getAllByRole('article')
+        .map((card) => card.getAttribute('aria-label')),
+    ).toEqual(['Zadanie: Trzecie', 'Zadanie: Pierwsze', 'Zadanie: Drugie']);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole('button', { name: 'Przenieś do…: Trzecie' }),
+      ).toHaveFocus();
+    });
+
+    await user.click(
+      screen.getByRole('button', { name: 'Przenieś do…: Trzecie' }),
+    );
+    dialog = screen.getByRole('dialog', { name: 'Przenieś do…' });
+    await user.selectOptions(
+      within(dialog).getByRole('combobox', { name: 'Miejsce docelowe' }),
+      'sunday',
+    );
+    await user.click(
+      within(dialog).getByRole('button', { name: 'Przenieś zadanie' }),
+    );
+
+    const sunday = screen.getByRole('region', { name: 'Niedziela' });
+
+    expect(
+      within(sunday).getByRole('article', { name: 'Zadanie: Trzecie' }),
+    ).toBeInTheDocument();
+    expect(within(sunday).getByText('Zaplanowano: 30 min')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        within(sunday).getByRole('button', {
+          name: 'Przenieś do…: Trzecie',
+        }),
+      ).toHaveFocus();
+    });
+  });
+
+  it('starts safely with corrupted storage and replaces it after a valid change', async () => {
+    const user = userEvent.setup();
+
+    window.localStorage.setItem(STORAGE_KEY, '{"schemaVersion":1,"tasks":');
+    render(<App />);
+
+    expect(screen.getByLabelText('Liczba zadań: 0')).toBeInTheDocument();
+
+    await openAddTaskForm(user);
+    await user.type(
+      screen.getByRole('textbox', { name: 'Nazwa' }),
+      'Po bezpiecznym starcie',
+    );
+    await user.click(screen.getByRole('button', { name: 'Dodaj zadanie' }));
+
+    expect(screen.getByText('Po bezpiecznym starcie')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(() => {
+        JSON.parse(window.localStorage.getItem(STORAGE_KEY) ?? '');
+      }).not.toThrow();
+    });
+  });
+
+  it('shows large day totals without imposing an artificial duration limit', () => {
+    const state = createEmptyAppState();
+    const activeTask = createStoredTask('large-active', {
+      title: 'Duże aktywne zadanie',
+      durationMinutes: 600_000,
+    });
+    const completedTask = createStoredTask('large-completed', {
+      title: 'Duże wykonane zadanie',
+      durationMinutes: 600_000,
+      status: 'completed',
+    });
+
+    state.tasks = {
+      [activeTask.id]: activeTask,
+      [completedTask.id]: completedTask,
+    };
+    state.columns.monday = [activeTask.id, completedTask.id];
+    storeState(state);
+
+    render(<App />);
+
+    const monday = screen.getByRole('region', { name: 'Poniedziałek' });
+
+    expect(
+      within(monday).getByText('Zaplanowano: 20000 godz.'),
+    ).toBeInTheDocument();
+    expect(
+      within(monday).getByText('Pozostało: 10000 godz.'),
+    ).toBeInTheDocument();
+  });
+
   it('keeps a long title and all card actions usable in the compact layout', async () => {
     const user = userEvent.setup();
     render(<App />);
@@ -434,6 +575,9 @@ describe('App', () => {
     expect(screen.queryAllByRole('radio')).toHaveLength(0);
     expect(
       screen.getByRole('button', { name: `Edytuj: ${longTitle}` }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: `Przenieś do…: ${longTitle}` }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: `Usuń: ${longTitle}` }),

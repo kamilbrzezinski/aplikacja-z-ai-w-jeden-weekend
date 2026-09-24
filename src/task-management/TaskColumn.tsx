@@ -18,6 +18,7 @@ interface TaskColumnProps {
   onDelete: (task: StoredTask) => void;
   onEmptyAction?: () => void;
   onEdit: (taskId: string, trigger: HTMLButtonElement) => void;
+  onMove: (taskId: string, trigger: HTMLButtonElement) => void;
   onStatusChange: (task: StoredTask) => void;
   summary?: DaySummary;
   tasks: StoredTask[];
@@ -29,6 +30,7 @@ interface SortableTaskCardProps {
   location: TaskLocation;
   onDelete: (task: StoredTask) => void;
   onEdit: (taskId: string, trigger: HTMLButtonElement) => void;
+  onMove: (taskId: string, trigger: HTMLButtonElement) => void;
   onStatusChange: (task: StoredTask) => void;
   task: StoredTask;
 }
@@ -38,6 +40,7 @@ function SortableTaskCard({
   location,
   onDelete,
   onEdit,
+  onMove,
   onStatusChange,
   task,
 }: SortableTaskCardProps) {
@@ -65,6 +68,7 @@ function SortableTaskCard({
         }}
         task={task}
         onEdit={onEdit}
+        onMove={onMove}
         onStatusChange={onStatusChange}
         onDelete={onDelete}
       />
@@ -79,6 +83,7 @@ export function TaskColumn({
   onDelete,
   onEmptyAction,
   onEdit,
+  onMove,
   onStatusChange,
   summary,
   tasks,
@@ -138,6 +143,7 @@ export function TaskColumn({
                 location={location}
                 task={task}
                 onEdit={onEdit}
+                onMove={onMove}
                 onStatusChange={onStatusChange}
                 onDelete={onDelete}
               />

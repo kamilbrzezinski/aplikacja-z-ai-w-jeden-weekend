@@ -54,6 +54,12 @@ Warstwa zapisu z `Z5`, podłączona docelowo do planszy w `Z9`, będzie obserwow
 wyłącznie zatwierdzony stan domenowy, dlatego przejściowe aktualizacje
 `onDragOver` nie trafią do `localStorage`.
 
+Audyt z `Z10` uzupełnił sensor klawiatury o akcję „Przenieś do…”. Otwiera ona
+natywny dialog z wyborem docelowej kolumny i dokładnej pozycji, a zatwierdzenie
+wysyła tę samą semantyczną akcję reducera co poprawne upuszczenie DnD. Dzięki
+temu pełne przenoszenie i zmiana kolejności nie zależą od geometrii planszy ani
+od zachowania sensora w poziomo przewijanym obszarze.
+
 ## 4. Formularze i style
 
 - Formularz zadania będzie zwykłym kontrolowanym formularzem React. Ze względu na małą liczbę pól nie będzie używana osobna biblioteka formularzy.
