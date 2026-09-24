@@ -3,6 +3,8 @@ import styles from './TaskCard.module.css';
 
 interface TaskCardProps {
   compact?: boolean;
+  dragHandleId?: string;
+  dragHandleRef?: (element: HTMLButtonElement | null) => void;
   task: StoredTask;
   onEdit: (taskId: string, trigger: HTMLButtonElement) => void;
   onDelete: (task: StoredTask) => void;
@@ -17,6 +19,8 @@ const priorityLabels: Record<StoredTask['priority'], string> = {
 
 export function TaskCard({
   compact = false,
+  dragHandleId,
+  dragHandleRef,
   task,
   onEdit,
   onDelete,
@@ -35,18 +39,22 @@ export function TaskCard({
       data-status={task.status}
       aria-label={`Zadanie: ${task.title}`}
     >
-      <span
+      <button
+        ref={dragHandleRef}
+        id={dragHandleId}
+        type="button"
         className={styles.dragHandle}
         title="Uchwyt przeciągania"
-        aria-hidden="true"
+        aria-label={`Przenieś: ${task.title}`}
+        aria-describedby="dnd-instructions"
       >
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-        <span />
-      </span>
+        <span aria-hidden="true" />
+        <span aria-hidden="true" />
+        <span aria-hidden="true" />
+        <span aria-hidden="true" />
+        <span aria-hidden="true" />
+        <span aria-hidden="true" />
+      </button>
 
       <div className={styles.content}>
         <div className={styles.headingRow}>

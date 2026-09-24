@@ -193,8 +193,28 @@
   grid-auto-rows: 3px;
   gap: 3px;
   width: max-content;
+  padding: 0.45rem;
+  border: 0;
+  border-radius: 0.4rem;
   color: var(--color-border-strong);
+  background: transparent;
   align-self: center;
+  cursor: grab;
+  touch-action: none;
+}
+
+.dragHandle:hover {
+  color: var(--color-text);
+  background: var(--color-surface-muted);
+}
+
+.dragHandle:focus-visible {
+  outline: 3px solid var(--color-focus);
+  outline-offset: 2px;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
 }
 
 .dragHandle span {
