@@ -41,6 +41,16 @@ function storeState(state: AppState) {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
+async function openAddTaskForm(user: ReturnType<typeof userEvent.setup>) {
+  const trigger = screen.getByRole('button', {
+    name: 'Dodaj zadanie',
+  });
+
+  await user.click(trigger);
+
+  return trigger;
+}
+
 beforeEach(() => {
   window.localStorage.removeItem(STORAGE_KEY);
 });
@@ -52,29 +62,59 @@ afterEach(() => {
 });
 
 describe('App', () => {
-  it('places the add form before an initially empty backlog', () => {
+  it('opens the add form above an empty backlog and restores focus when cancelled', async () => {
+    const user = userEvent.setup();
     render(<App />);
+
+    const trigger = screen.getByRole('button', {
+      name: 'Dodaj zadanie',
+    });
+    const emptyAction = screen.getByRole('button', {
+      name: 'Dodaj pierwsze zadanie',
+    });
+
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    expect(
+      screen.queryByRole('heading', { name: 'Dodaj zadanie' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Tu pojawią się zadania, które czekają na zaplanowanie.',
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Liczba zadań: 0')).toBeInTheDocument();
+
+    await user.click(trigger);
 
     const addHeading = screen.getByRole('heading', { name: 'Dodaj zadanie' });
     const backlogHeading = screen.getByRole('heading', {
       name: 'Do zaplanowania',
     });
 
+    expect(trigger).toHaveAttribute('aria-expanded', 'true');
+    expect(screen.getByRole('textbox', { name: 'Nazwa' })).toHaveFocus();
     expect(
       addHeading.compareDocumentPosition(backlogHeading) &
         Node.DOCUMENT_POSITION_FOLLOWING,
     ).toBeTruthy();
-    expect(
-      screen.getByText('Nie masz jeszcze zadań. Dodaj pierwsze powyżej.'),
-    ).toBeInTheDocument();
-    expect(screen.getByLabelText('Liczba zadań: 0')).toBeInTheDocument();
+
+    await user.click(screen.getByRole('button', { name: 'Anuluj' }));
+
+    expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    expect(trigger).toHaveFocus();
+
+    await user.click(emptyAction);
+
+    expect(screen.getByRole('textbox', { name: 'Nazwa' })).toHaveFocus();
   });
 
   it('renders all seven empty day columns as visible targets with zero summaries', () => {
     render(<App />);
 
     expect(
-      screen.getByRole('region', { name: 'Twój tydzień' }),
+      screen.getByRole('region', {
+        name: 'Od poniedziałku do niedzieli',
+      }),
     ).toBeInTheDocument();
     expect(screen.getByLabelText('Kolumny dni tygodnia')).toHaveAttribute(
       'tabindex',
@@ -85,9 +125,7 @@ describe('App', () => {
       const column = screen.getByRole('region', { name: dayNames[day] });
 
       expect(
-        within(column).getByText(
-          'Brak zadań. To miejsce jest gotowe na Twój plan.',
-        ),
+        within(column).getByText('Upuść zadanie tutaj'),
       ).toBeInTheDocument();
       expect(
         within(column).getByText('Zaplanowano: 0 min'),
@@ -187,6 +225,7 @@ describe('App', () => {
   it('adds a valid task and edits every field in a populated dialog', async () => {
     const user = userEvent.setup();
     render(<App />);
+    await openAddTaskForm(user);
 
     await user.type(
       screen.getByRole('textbox', { name: 'Nazwa' }),
@@ -247,6 +286,7 @@ describe('App', () => {
   it('cancels editing without saving and restores focus', async () => {
     const user = userEvent.setup();
     render(<App />);
+    await openAddTaskForm(user);
 
     await user.type(
       screen.getByRole('textbox', { name: 'Nazwa' }),
@@ -274,6 +314,7 @@ describe('App', () => {
   it('handles the native dialog cancel event without saving', async () => {
     const user = userEvent.setup();
     render(<App />);
+    await openAddTaskForm(user);
 
     await user.type(
       screen.getByRole('textbox', { name: 'Nazwa' }),
@@ -300,6 +341,7 @@ describe('App', () => {
   it('marks a task as completed and allows restoring it without moving it', async () => {
     const user = userEvent.setup();
     render(<App />);
+    await openAddTaskForm(user);
 
     await user.type(
       screen.getByRole('textbox', { name: 'Nazwa' }),
@@ -348,6 +390,7 @@ describe('App', () => {
       .mockReturnValueOnce(false)
       .mockReturnValueOnce(true);
     render(<App />);
+    await openAddTaskForm(user);
 
     await user.type(
       screen.getByRole('textbox', { name: 'Nazwa' }),
@@ -375,6 +418,7 @@ describe('App', () => {
   it('keeps a long title and all card actions usable in the compact layout', async () => {
     const user = userEvent.setup();
     render(<App />);
+    await openAddTaskForm(user);
 
     const longTitle =
       'Bardzo długi tytuł zadania, który ma się bezpiecznie zawinąć i nie może rozbić układu karty nawet w wąskiej kolumnie';

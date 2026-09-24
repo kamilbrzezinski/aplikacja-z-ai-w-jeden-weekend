@@ -6,10 +6,12 @@
   grid-template-columns: auto minmax(0, 1fr);
   gap: 0.65rem;
   min-width: 0;
-  padding: 0.7rem 0.8rem;
-  border-block: 1px solid var(--color-border);
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-card);
   color: var(--color-text);
   background: var(--color-surface);
+  box-shadow: var(--shadow-task);
 }
 
 .card[data-priority='low'] {
@@ -49,7 +51,7 @@
   min-width: 0;
   margin: 0;
   overflow-wrap: anywhere;
-  font-size: 1rem;
+  font-size: 0.92rem;
   line-height: 1.38;
 }
 
@@ -64,7 +66,7 @@
   grid-column: 1;
   margin-top: 0;
   color: var(--color-text-muted);
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 650;
 }
 
@@ -164,10 +166,10 @@
   align-items: center;
   justify-content: center;
   gap: 0.28rem;
-  min-height: 2.1rem;
+  min-height: 2rem;
   padding: 0.35rem 0.55rem;
   border: 1px solid transparent;
-  border-radius: 0.55rem;
+  border-radius: 0.45rem;
   color: var(--color-text-muted);
   background: transparent;
   font-size: 0.76rem;
@@ -217,7 +219,7 @@
 }
 
 .card[data-layout='compact'] .actions button {
-  width: 2.1rem;
+  width: 2rem;
   padding-inline: 0;
 }
 

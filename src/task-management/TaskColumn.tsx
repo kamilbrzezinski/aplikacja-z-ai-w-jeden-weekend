@@ -8,9 +8,11 @@ import { TaskCard } from './TaskCard';
 import styles from './TaskColumn.module.css';
 
 interface TaskColumnProps {
+  emptyActionLabel?: string;
   emptyMessage: string;
   location: TaskLocation;
   onDelete: (task: StoredTask) => void;
+  onEmptyAction?: () => void;
   onEdit: (taskId: string, trigger: HTMLButtonElement) => void;
   onStatusChange: (task: StoredTask) => void;
   summary?: DaySummary;
@@ -19,9 +21,11 @@ interface TaskColumnProps {
 }
 
 export function TaskColumn({
+  emptyActionLabel,
   emptyMessage,
   location,
   onDelete,
+  onEmptyAction,
   onEdit,
   onStatusChange,
   summary,
@@ -54,7 +58,15 @@ export function TaskColumn({
 
       <div className={styles.taskArea}>
         {tasks.length === 0 ? (
-          <p className={styles.emptyState}>{emptyMessage}</p>
+          <div className={styles.emptyState}>
+            <p>{emptyMessage}</p>
+            {emptyActionLabel && onEmptyAction ? (
+              <button type="button" onClick={onEmptyAction}>
+                <span aria-hidden="true">+</span>
+                {emptyActionLabel}
+              </button>
+            ) : null}
+          </div>
         ) : (
           <ul className={styles.taskList}>
             {tasks.map((task) => (

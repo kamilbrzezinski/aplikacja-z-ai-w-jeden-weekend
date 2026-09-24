@@ -1,6 +1,6 @@
 :root {
-  color: #1d2a24;
-  background: #eef0e8;
+  color: #202a25;
+  background: #f3f5f1;
   font-family:
     Inter,
     ui-sans-serif,
@@ -12,21 +12,39 @@
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 
-  --color-text: #1d2a24;
-  --color-text-muted: #58635c;
-  --color-surface: #fffdf7;
-  --color-surface-muted: #f2f0e7;
-  --color-board: #f7f5ed;
-  --color-border: #d9d9ce;
-  --color-border-strong: #b9bdb2;
-  --color-accent: #316b4d;
-  --color-accent-soft: #e4efe7;
+  --color-text: #202a25;
+  --color-text-muted: #65716a;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f6f7f4;
+  --color-board: #f7f8f5;
+  --color-border: #e0e5df;
+  --color-border-strong: #bdc7bf;
+  --color-card-border: #dce2dc;
+  --color-accent: #347452;
+  --color-accent-strong: #295f42;
+  --color-accent-soft: #e4f1e9;
   --color-focus: #9b5f17;
   --color-danger: #a12e2e;
+  --color-day-monday: #7567bd;
+  --color-day-monday-soft: #efecfb;
+  --color-day-tuesday: #4787b2;
+  --color-day-tuesday-soft: #e7f2fa;
+  --color-day-wednesday: #42866a;
+  --color-day-wednesday-soft: #e6f3ed;
+  --color-day-thursday: #ad772e;
+  --color-day-thursday-soft: #faf0df;
+  --color-day-friday: #b75f70;
+  --color-day-friday-soft: #f9e9ed;
+  --color-day-saturday: #7e69aa;
+  --color-day-saturday-soft: #eeeafa;
+  --color-day-sunday: #b56e4f;
+  --color-day-sunday-soft: #faece5;
   --shadow-card: 0 1.5rem 4rem rgb(42 55 47 / 12%);
   --shadow-subtle: 0 0.75rem 2rem rgb(42 55 47 / 8%);
+  --shadow-task: 0 1px 2px rgb(42 55 47 / 7%);
   --radius-panel: 1rem;
   --radius-control: 0.75rem;
+  --radius-card: 0.65rem;
 }
 
 * {

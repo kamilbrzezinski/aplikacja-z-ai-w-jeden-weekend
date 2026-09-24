@@ -31,13 +31,24 @@ function createTask(values: TaskFormValues): StoredTask {
 }
 
 export function TaskManagement({ state, dispatch }: TaskManagementProps) {
+  const [isAddFormOpen, setIsAddFormOpen] = useState(false);
   const [editedTaskId, setEditedTaskId] = useState<string | null>(null);
+  const addTaskTriggerRef = useRef<HTMLButtonElement | null>(null);
   const editTriggerRef = useRef<HTMLButtonElement | null>(null);
   const backlogTasks = selectTasksByLocation(state, 'backlog');
   const editedTask = editedTaskId ? (state.tasks[editedTaskId] ?? null) : null;
 
   const addTask = (values: TaskFormValues) => {
     dispatch({ type: 'task/added', task: createTask(values) });
+  };
+
+  const openAddForm = () => {
+    setIsAddFormOpen(true);
+  };
+
+  const closeAddForm = () => {
+    setIsAddFormOpen(false);
+    addTaskTriggerRef.current?.focus();
   };
 
   const editTask = (taskId: string, values: TaskFormValues) => {
@@ -70,79 +81,100 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
 
   return (
     <main className={styles.shell}>
-      <header className={styles.intro}>
-        <p className={styles.eyebrow}>Organizer tygodnia</p>
-        <h1>Zacznij od zadań</h1>
-        <p className={styles.lead}>
-          Dodaj to, co chcesz zrobić, a potem rozłóż zadania na wybrane dni
-          tygodnia.
-        </p>
+      <header className={styles.appHeader}>
+        <div>
+          <p className={styles.eyebrow}>Organizer tygodnia</p>
+          <h1>Mój tydzień</h1>
+          <p className={styles.lead}>
+            Zbierz zadania i rozłóż je na spokojny, wykonalny plan.
+          </p>
+        </div>
+        <button
+          ref={addTaskTriggerRef}
+          type="button"
+          className={styles.addTaskButton}
+          aria-expanded={isAddFormOpen}
+          aria-controls="add-task-panel"
+          onClick={() => {
+            setIsAddFormOpen((isOpen) => !isOpen);
+          }}
+        >
+          <span aria-hidden="true">{isAddFormOpen ? '−' : '+'}</span>
+          {isAddFormOpen ? 'Zwiń formularz' : 'Dodaj zadanie'}
+        </button>
       </header>
 
-      <div className={styles.workspace}>
-        <aside className={styles.sidebar} aria-label="Zadania do zaplanowania">
-          <section
-            className={styles.addPanel}
-            aria-labelledby="add-task-heading"
-          >
+      {isAddFormOpen ? (
+        <section
+          id="add-task-panel"
+          className={styles.addPanel}
+          aria-labelledby="add-task-heading"
+        >
+          <div className={styles.addPanelHeading}>
             <h2 id="add-task-heading">Dodaj zadanie</h2>
-            <TaskForm
-              layout="stacked"
-              submitLabel="Dodaj zadanie"
-              resetAfterSubmit
-              onSubmit={addTask}
-            />
-          </section>
-
-          <TaskColumn
-            location="backlog"
-            title="Do zaplanowania"
-            tasks={backlogTasks}
-            emptyMessage="Nie masz jeszcze zadań. Dodaj pierwsze powyżej."
-            onEdit={(taskId, trigger) => {
-              editTriggerRef.current = trigger;
-              setEditedTaskId(taskId);
-            }}
-            onStatusChange={changeTaskStatus}
-            onDelete={deleteTask}
+            <p>
+              Uzupełnij szczegóły. Po dodaniu możesz od razu wpisać kolejne.
+            </p>
+          </div>
+          <TaskForm
+            submitLabel="Dodaj zadanie"
+            resetAfterSubmit
+            titleAutoFocus
+            onCancel={closeAddForm}
+            onSubmit={addTask}
           />
-        </aside>
-
-        <section className={styles.week} aria-labelledby="week-heading">
-          <div className={styles.weekHeading}>
-            <div>
-              <p className={styles.sectionEyebrow}>Plan tygodnia</p>
-              <h2 id="week-heading">Twój tydzień</h2>
-            </div>
-            <p>Siedem dni · przewiń poziomo, aby zobaczyć cały plan</p>
-          </div>
-
-          <div
-            className={styles.weekScroller}
-            tabIndex={0}
-            aria-label="Kolumny dni tygodnia"
-          >
-            <div className={styles.weekColumns}>
-              {dayLocations.map((day) => (
-                <TaskColumn
-                  key={day}
-                  location={day}
-                  title={dayNames[day]}
-                  tasks={selectTasksByLocation(state, day)}
-                  summary={selectDaySummary(state, day)}
-                  emptyMessage="Brak zadań. To miejsce jest gotowe na Twój plan."
-                  onEdit={(taskId, trigger) => {
-                    editTriggerRef.current = trigger;
-                    setEditedTaskId(taskId);
-                  }}
-                  onStatusChange={changeTaskStatus}
-                  onDelete={deleteTask}
-                />
-              ))}
-            </div>
-          </div>
         </section>
-      </div>
+      ) : null}
+
+      <TaskColumn
+        location="backlog"
+        title="Do zaplanowania"
+        tasks={backlogTasks}
+        emptyMessage="Tu pojawią się zadania, które czekają na zaplanowanie."
+        emptyActionLabel="Dodaj pierwsze zadanie"
+        onEmptyAction={openAddForm}
+        onEdit={(taskId, trigger) => {
+          editTriggerRef.current = trigger;
+          setEditedTaskId(taskId);
+        }}
+        onStatusChange={changeTaskStatus}
+        onDelete={deleteTask}
+      />
+
+      <section className={styles.week} aria-labelledby="week-heading">
+        <div className={styles.weekHeading}>
+          <div>
+            <p className={styles.sectionEyebrow}>Plan tygodnia</p>
+            <h2 id="week-heading">Od poniedziałku do niedzieli</h2>
+          </div>
+          <p>Na mniejszych ekranach przewiń planszę poziomo.</p>
+        </div>
+
+        <div
+          className={styles.weekScroller}
+          tabIndex={0}
+          aria-label="Kolumny dni tygodnia"
+        >
+          <div className={styles.weekColumns}>
+            {dayLocations.map((day) => (
+              <TaskColumn
+                key={day}
+                location={day}
+                title={dayNames[day]}
+                tasks={selectTasksByLocation(state, day)}
+                summary={selectDaySummary(state, day)}
+                emptyMessage="Upuść zadanie tutaj"
+                onEdit={(taskId, trigger) => {
+                  editTriggerRef.current = trigger;
+                  setEditedTaskId(taskId);
+                }}
+                onStatusChange={changeTaskStatus}
+                onDelete={deleteTask}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
 
       <TaskEditDialog
         task={editedTask}

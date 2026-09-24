@@ -4,24 +4,36 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/');
 });
 
-test('shows the add form above the empty backlog', async ({ page }) => {
-  const addHeading = page.getByRole('heading', { name: 'Dodaj zadanie' });
+test('expands the add form above the empty backlog', async ({ page }) => {
+  const addTrigger = page.locator('button[aria-controls="add-task-panel"]');
   const backlogHeading = page.getByRole('heading', {
     name: 'Do zaplanowania',
   });
-  const duration = page.getByRole('spinbutton', { name: 'Czas (minuty)' });
 
   await expect(
-    page.getByRole('heading', { name: 'Zacznij od zadań' }),
+    page.getByRole('heading', { name: 'Mój tydzień' }),
   ).toBeVisible();
+  await expect(addTrigger).toHaveAttribute('aria-expanded', 'false');
+  await expect(
+    page.getByRole('heading', { name: 'Dodaj zadanie' }),
+  ).not.toBeVisible();
+  await expect(
+    page.getByText('Tu pojawią się zadania, które czekają na zaplanowanie.'),
+  ).toBeVisible();
+
+  await addTrigger.click();
+
+  const addHeading = page.getByRole('heading', { name: 'Dodaj zadanie' });
+  const title = page.getByRole('textbox', { name: 'Nazwa' });
+  const duration = page.getByRole('spinbutton', { name: 'Czas (minuty)' });
+
+  await expect(addTrigger).toHaveAttribute('aria-expanded', 'true');
   await expect(addHeading).toBeVisible();
   await expect(backlogHeading).toBeVisible();
+  await expect(title).toBeFocused();
   await expect(duration).toHaveValue('30');
   await expect(duration).toHaveAttribute('min', '15');
   await expect(duration).toHaveAttribute('step', '15');
-  await expect(
-    page.getByText('Nie masz jeszcze zadań. Dodaj pierwsze powyżej.'),
-  ).toBeVisible();
   expect(
     await addHeading.evaluate((element) => {
       const backlog = document.querySelector('#backlog-heading');
@@ -35,10 +47,18 @@ test('shows the add form above the empty backlog', async ({ page }) => {
       );
     }),
   ).toBe(true);
+
+  await page.getByRole('button', { name: 'Anuluj' }).click();
+
+  await expect(addTrigger).toHaveAttribute('aria-expanded', 'false');
+  await expect(addTrigger).toBeFocused();
   await expect(page).toHaveTitle('Organizer tygodnia');
 });
 
 test('rejects invalid values without adding a task', async ({ page }) => {
+  await page
+    .getByRole('button', { name: 'Dodaj zadanie', exact: true })
+    .click();
   await page.getByRole('button', { name: 'Dodaj zadanie' }).click();
 
   await expect(page.getByText('Wpisz nazwę zadania.')).toBeVisible();
@@ -59,6 +79,10 @@ test('rejects invalid values without adding a task', async ({ page }) => {
 test('adds and edits a task, while Escape cancels and restores focus', async ({
   page,
 }) => {
+  await page
+    .getByRole('button', { name: 'Dodaj zadanie', exact: true })
+    .click();
+
   const addTitle = page.getByRole('textbox', { name: 'Nazwa' });
   const addPriority = page.getByRole('combobox', { name: 'Priorytet' });
   const addDuration = page.getByRole('spinbutton', { name: 'Czas (minuty)' });

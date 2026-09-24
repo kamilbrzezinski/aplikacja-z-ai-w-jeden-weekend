@@ -63,14 +63,15 @@ Zwykła lista zadań pokazuje, co należy zrobić, ale nie pomaga zdecydować, k
 
 ### Główny widok
 
-Interfejs ma jeden ekran podzielony na dwie części:
+Interfejs ma jeden ekran ułożony warstwowo:
 
-- po lewej znajduje się lista „Do zaplanowania”;
-- po prawej znajduje się siedem kolumn: poniedziałek, wtorek, środa, czwartek, piątek, sobota i niedziela.
+- u góry znajduje się rozwijany formularz dodawania;
+- pod nim znajduje się pełnoszeroka lista „Do zaplanowania”;
+- niżej znajduje się pełnoszeroka plansza siedmiu kolumn: poniedziałek, wtorek, środa, czwartek, piątek, sobota i niedziela.
 
 Kolumny nie reprezentują konkretnych dat. Aplikacja nie zna aktualnego tygodnia i nie wykonuje żadnych operacji automatycznie wraz z upływem czasu.
 
-Interfejs jest projektowany przede wszystkim dla ekranu komputera. Jeżeli siedem kolumn nie mieści się w dostępnej szerokości, obszar tygodnia może przewijać się poziomo.
+Interfejs jest projektowany przede wszystkim dla ekranu komputera. Na dużym ekranie powinien pokazywać wszystkie siedem dni jednocześnie. Jeżeli kolumny nie mieszczą się w czytelnej szerokości, obszar tygodnia może przewijać się poziomo.
 
 ### Karta zadania
 
