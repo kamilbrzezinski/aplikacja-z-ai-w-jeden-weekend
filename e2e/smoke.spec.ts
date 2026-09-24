@@ -69,9 +69,8 @@ test('adds and edits a task, while Escape cancels and restores focus', async ({
   await page.getByRole('button', { name: 'Dodaj zadanie' }).click();
 
   await expect(page.getByText('Przygotować prezentację')).toBeVisible();
-  await expect(
-    page.getByText('Priorytet: Wysoki · Czas: 2 godz.'),
-  ).toBeVisible();
+  await expect(page.getByText('Wysoki priorytet')).toBeVisible();
+  await expect(page.getByText('2 godz.')).toBeVisible();
   await expect(addTitle).toHaveValue('');
   await expect(addPriority).toHaveValue('medium');
   await expect(addDuration).toHaveValue('30');
@@ -106,7 +105,8 @@ test('adds and edits a task, while Escape cancels and restores focus', async ({
 
   await expect(dialog).not.toBeVisible();
   await expect(page.getByText('Prezentacja kwartalna')).toBeVisible();
-  await expect(page.getByText('Priorytet: Niski · Czas: 45 min')).toBeVisible();
+  await expect(page.getByText('Niski priorytet')).toBeVisible();
+  await expect(page.getByText('45 min')).toBeVisible();
   await expect(
     page.getByRole('button', { name: 'Edytuj: Prezentacja kwartalna' }),
   ).toBeFocused();

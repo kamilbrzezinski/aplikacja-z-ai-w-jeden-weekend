@@ -1,26 +1,16 @@
 import { useRef, useState, type Dispatch } from 'react';
 
 import styles from '../App.module.css';
-import {
-  formatDuration,
-  type AppState,
-  type Priority,
-  type StoredTask,
-} from '../domain/model';
+import { type AppState, type StoredTask } from '../domain/model';
 import type { AppAction } from '../domain/reducer';
 import { TaskEditDialog } from '../task-form/TaskEditDialog';
 import { TaskForm, type TaskFormValues } from '../task-form/TaskForm';
+import { TaskCard } from './TaskCard';
 
 interface TaskManagementProps {
   state: AppState;
   dispatch: Dispatch<AppAction>;
 }
-
-const priorityLabels: Record<Priority, string> = {
-  low: 'Niski',
-  medium: 'Średni',
-  high: 'Wysoki',
-};
 
 function createTask(values: TaskFormValues): StoredTask {
   const timestamp = new Date().toISOString();
@@ -54,6 +44,25 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
       changes: values,
       updatedAt: new Date().toISOString(),
     });
+  };
+
+  const changeTaskStatus = (task: StoredTask) => {
+    dispatch({
+      type: 'task/statusChanged',
+      taskId: task.id,
+      status: task.status === 'active' ? 'completed' : 'active',
+      updatedAt: new Date().toISOString(),
+    });
+  };
+
+  const deleteTask = (task: StoredTask) => {
+    const shouldDelete = window.confirm(
+      `Usunąć zadanie „${task.title}”? Tej operacji nie można cofnąć.`,
+    );
+
+    if (shouldDelete) {
+      dispatch({ type: 'task/deleted', taskId: task.id });
+    }
   };
 
   return (
@@ -94,25 +103,16 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
         ) : (
           <ul className={styles.taskList}>
             {backlogTasks.map((task) => (
-              <li key={task.id} className={styles.taskPreview}>
-                <span className={styles.taskData}>
-                  <span className={styles.taskTitle}>{task.title}</span>
-                  <span className={styles.taskMeta}>
-                    Priorytet: {priorityLabels[task.priority]} · Czas:{' '}
-                    {formatDuration(task.durationMinutes)}
-                  </span>
-                </span>
-                <button
-                  type="button"
-                  className={styles.editButton}
-                  aria-label={`Edytuj: ${task.title}`}
-                  onClick={(event) => {
-                    editTriggerRef.current = event.currentTarget;
-                    setEditedTaskId(task.id);
+              <li key={task.id}>
+                <TaskCard
+                  task={task}
+                  onEdit={(taskId, trigger) => {
+                    editTriggerRef.current = trigger;
+                    setEditedTaskId(taskId);
                   }}
-                >
-                  Edytuj
-                </button>
+                  onStatusChange={changeTaskStatus}
+                  onDelete={deleteTask}
+                />
               </li>
             ))}
           </ul>
