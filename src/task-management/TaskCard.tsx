@@ -7,6 +7,7 @@ interface TaskCardProps {
   dragHandleRef?: (element: HTMLButtonElement | null) => void;
   task: StoredTask;
   onEdit: (taskId: string, trigger: HTMLButtonElement) => void;
+  onMove: (taskId: string, trigger: HTMLButtonElement) => void;
   onDelete: (task: StoredTask) => void;
   onStatusChange: (task: StoredTask) => void;
 }
@@ -23,6 +24,7 @@ export function TaskCard({
   dragHandleRef,
   task,
   onEdit,
+  onMove,
   onDelete,
   onStatusChange,
 }: TaskCardProps) {
@@ -90,6 +92,18 @@ export function TaskCard({
           </label>
 
           <div className={styles.actions}>
+            <button
+              id={`move-button-${task.id}`}
+              type="button"
+              className={styles.moveButton}
+              aria-label={`Przenieś do…: ${task.title}`}
+              onClick={(event) => {
+                onMove(task.id, event.currentTarget);
+              }}
+            >
+              <span aria-hidden="true">↪</span>
+              <span>Przenieś do…</span>
+            </button>
             <button
               type="button"
               className={styles.editButton}

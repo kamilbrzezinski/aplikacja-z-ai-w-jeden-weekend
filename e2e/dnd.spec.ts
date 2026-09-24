@@ -22,18 +22,41 @@ async function addTask(
   await page.getByRole('button', { name: 'Dodaj zadanie' }).click();
 }
 
-async function keyboardMove(page: Page, title: string, keys: string[]) {
-  const handle = page.getByRole('button', { name: `Przenieś: ${title}` });
+async function keyboardMoveToThursday(
+  page: Page,
+  title: string,
+  position?: 'first',
+) {
+  const trigger = page.getByRole('button', {
+    name: `Przenieś do…: ${title}`,
+  });
 
-  await handle.focus();
+  await trigger.focus();
   await page.keyboard.press('Enter');
 
-  for (const key of keys) {
-    await page.keyboard.press(key);
+  const dialog = page.getByRole('dialog', { name: 'Przenieś do…' });
+  const destination = dialog.getByRole('combobox', {
+    name: 'Miejsce docelowe',
+  });
+  const destinationPosition = dialog.getByRole('combobox', {
+    name: 'Pozycja w kolumnie',
+  });
+
+  await expect(destination).toBeFocused();
+  await destination.press('c');
+  await expect(destination).toHaveValue('thursday');
+  await page.keyboard.press('Tab');
+
+  if (position === 'first') {
+    await destinationPosition.press('1');
+    await expect(destinationPosition).toHaveValue('1');
   }
 
+  await page.keyboard.press('Tab');
   await page.keyboard.press('Enter');
-  await expect(handle).toBeFocused();
+  await expect(
+    page.getByRole('button', { name: `Przenieś do…: ${title}` }),
+  ).toBeFocused();
 }
 
 test.beforeEach(async ({ page }) => {
@@ -44,7 +67,7 @@ test('plans and reorders tasks with the keyboard, then restores the saved state'
   page,
 }) => {
   await addTask(page, 'Przygotować prezentację', 120, 'high');
-  await keyboardMove(page, 'Przygotować prezentację', ['ArrowDown']);
+  await keyboardMoveToThursday(page, 'Przygotować prezentację');
 
   const thursday = page.getByRole('region', { name: 'Czwartek' });
 
@@ -55,7 +78,7 @@ test('plans and reorders tasks with the keyboard, then restores the saved state'
   ).toBeVisible();
 
   await addTask(page, 'Sprawdzić notatki', 30);
-  await keyboardMove(page, 'Sprawdzić notatki', ['ArrowDown']);
+  await keyboardMoveToThursday(page, 'Sprawdzić notatki');
 
   await expect(
     thursday.getByRole('article', { name: 'Zadanie: Sprawdzić notatki' }),
@@ -75,7 +98,7 @@ test('plans and reorders tasks with the keyboard, then restores the saved state'
     return;
   }
 
-  await keyboardMove(page, bottomTaskTitle, ['ArrowUp']);
+  await keyboardMoveToThursday(page, bottomTaskTitle, 'first');
 
   await expect(thursday.getByRole('article').nth(0)).toHaveAttribute(
     'aria-label',
