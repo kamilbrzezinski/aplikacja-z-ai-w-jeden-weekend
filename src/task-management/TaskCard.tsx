@@ -2,6 +2,7 @@ import { formatDuration, type StoredTask } from '../domain/model';
 import styles from './TaskCard.module.css';
 
 interface TaskCardProps {
+  compact?: boolean;
   task: StoredTask;
   onEdit: (taskId: string, trigger: HTMLButtonElement) => void;
   onDelete: (task: StoredTask) => void;
@@ -15,6 +16,7 @@ const priorityLabels: Record<StoredTask['priority'], string> = {
 };
 
 export function TaskCard({
+  compact = false,
   task,
   onEdit,
   onDelete,
@@ -28,6 +30,7 @@ export function TaskCard({
   return (
     <article
       className={styles.card}
+      data-layout={compact ? 'compact' : 'wide'}
       data-priority={task.priority}
       data-status={task.status}
       aria-label={`Zadanie: ${task.title}`}

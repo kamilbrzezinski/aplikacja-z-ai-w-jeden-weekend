@@ -1,8 +1,19 @@
-import type { AppState, DayLocation } from './model';
+import type { AppState, DayLocation, StoredTask, TaskLocation } from './model';
 
 export interface DaySummary {
   plannedMinutes: number;
   remainingMinutes: number;
+}
+
+export function selectTasksByLocation(
+  state: AppState,
+  location: TaskLocation,
+): StoredTask[] {
+  return state.columns[location].flatMap((taskId) => {
+    const task = state.tasks[taskId];
+
+    return task ? [task] : [];
+  });
 }
 
 export function selectDaySummary(

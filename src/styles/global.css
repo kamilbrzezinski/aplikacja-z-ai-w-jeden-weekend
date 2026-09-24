@@ -24,6 +24,9 @@
   --color-focus: #9b5f17;
   --color-danger: #a12e2e;
   --shadow-card: 0 1.5rem 4rem rgb(42 55 47 / 12%);
+  --shadow-subtle: 0 0.75rem 2rem rgb(42 55 47 / 8%);
+  --radius-panel: 1rem;
+  --radius-control: 0.75rem;
 }
 
 * {

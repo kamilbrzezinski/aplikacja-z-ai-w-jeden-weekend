@@ -10,7 +10,36 @@ import userEvent from '@testing-library/user-event';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { App } from './App';
+import {
+  createEmptyAppState,
+  dayLocations,
+  dayNames,
+  type AppState,
+  type StoredTask,
+} from './domain/model';
 import { STORAGE_KEY } from './storage/appStateStorage';
+
+const TIMESTAMP = '2026-09-24T08:00:00.000Z';
+
+function createStoredTask(
+  id: string,
+  overrides: Partial<StoredTask> = {},
+): StoredTask {
+  return {
+    id,
+    title: `Zadanie ${id}`,
+    priority: 'medium',
+    durationMinutes: 30,
+    status: 'active',
+    createdAt: TIMESTAMP,
+    updatedAt: TIMESTAMP,
+    ...overrides,
+  };
+}
+
+function storeState(state: AppState) {
+  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
 
 beforeEach(() => {
   window.localStorage.removeItem(STORAGE_KEY);
@@ -39,6 +68,120 @@ describe('App', () => {
       screen.getByText('Nie masz jeszcze zadań. Dodaj pierwsze powyżej.'),
     ).toBeInTheDocument();
     expect(screen.getByLabelText('Liczba zadań: 0')).toBeInTheDocument();
+  });
+
+  it('renders all seven empty day columns as visible targets with zero summaries', () => {
+    render(<App />);
+
+    expect(
+      screen.getByRole('region', { name: 'Twój tydzień' }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Kolumny dni tygodnia')).toHaveAttribute(
+      'tabindex',
+      '0',
+    );
+
+    for (const day of dayLocations) {
+      const column = screen.getByRole('region', { name: dayNames[day] });
+
+      expect(
+        within(column).getByText(
+          'Brak zadań. To miejsce jest gotowe na Twój plan.',
+        ),
+      ).toBeInTheDocument();
+      expect(
+        within(column).getByText('Zaplanowano: 0 min'),
+      ).toBeInTheDocument();
+      expect(within(column).getByText('Pozostało: 0 min')).toBeInTheDocument();
+    }
+  });
+
+  it('renders tasks in stored column order and excludes completed time from remaining', () => {
+    const state = createEmptyAppState();
+    const activeTask = createStoredTask('active', {
+      title: 'Pierwsze aktywne',
+      durationMinutes: 90,
+    });
+    const completedTask = createStoredTask('completed', {
+      title: 'Drugie wykonane',
+      durationMinutes: 30,
+      status: 'completed',
+    });
+
+    state.tasks = {
+      [activeTask.id]: activeTask,
+      [completedTask.id]: completedTask,
+    };
+    state.columns.wednesday = [activeTask.id, completedTask.id];
+    storeState(state);
+
+    render(<App />);
+
+    const wednesday = screen.getByRole('region', { name: 'Środa' });
+    const cards = within(wednesday).getAllByRole('article');
+
+    expect(cards.map((card) => card.getAttribute('aria-label'))).toEqual([
+      'Zadanie: Pierwsze aktywne',
+      'Zadanie: Drugie wykonane',
+    ]);
+    expect(
+      within(wednesday).getByText('Zaplanowano: 2 godz.'),
+    ).toBeInTheDocument();
+    expect(
+      within(wednesday).getByText('Pozostało: 1 godz. 30 min'),
+    ).toBeInTheDocument();
+  });
+
+  it('updates a day summary immediately after changing status and duration', async () => {
+    const user = userEvent.setup();
+    const state = createEmptyAppState();
+    const task = createStoredTask('planned', {
+      title: 'Zaplanowane zadanie',
+      durationMinutes: 60,
+    });
+
+    state.tasks = { [task.id]: task };
+    state.columns.monday = [task.id];
+    storeState(state);
+
+    render(<App />);
+
+    const monday = screen.getByRole('region', { name: 'Poniedziałek' });
+
+    expect(
+      within(monday).getByText('Zaplanowano: 1 godz.'),
+    ).toBeInTheDocument();
+    expect(within(monday).getByText('Pozostało: 1 godz.')).toBeInTheDocument();
+
+    await user.click(
+      within(monday).getByRole('checkbox', {
+        name: 'Oznacz jako wykonane: Zaplanowane zadanie',
+      }),
+    );
+
+    expect(
+      within(monday).getByText('Zaplanowano: 1 godz.'),
+    ).toBeInTheDocument();
+    expect(within(monday).getByText('Pozostało: 0 min')).toBeInTheDocument();
+
+    await user.click(
+      within(monday).getByRole('button', {
+        name: 'Edytuj: Zaplanowane zadanie',
+      }),
+    );
+    const dialog = screen.getByRole('dialog', { name: 'Popraw szczegóły' });
+    fireEvent.change(
+      within(dialog).getByRole('spinbutton', { name: 'Czas (minuty)' }),
+      { target: { value: '90' } },
+    );
+    await user.click(
+      within(dialog).getByRole('button', { name: 'Zapisz zmiany' }),
+    );
+
+    expect(
+      within(monday).getByText('Zaplanowano: 1 godz. 30 min'),
+    ).toBeInTheDocument();
+    expect(within(monday).getByText('Pozostało: 0 min')).toBeInTheDocument();
   });
 
   it('adds a valid task and edits every field in a populated dialog', async () => {
