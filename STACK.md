@@ -54,11 +54,12 @@ Warstwa zapisu z `Z5`, podłączona docelowo do planszy w `Z9`, będzie obserwow
 wyłącznie zatwierdzony stan domenowy, dlatego przejściowe aktualizacje
 `onDragOver` nie trafią do `localStorage`.
 
-Audyt z `Z10` uzupełnił sensor klawiatury o akcję „Przenieś do…”. Otwiera ona
-natywny dialog z wyborem docelowej kolumny i dokładnej pozycji, a zatwierdzenie
-wysyła tę samą semantyczną akcję reducera co poprawne upuszczenie DnD. Dzięki
-temu pełne przenoszenie i zmiana kolejności nie zależą od geometrii planszy ani
-od zachowania sensora w poziomo przewijanym obszarze.
+Audyt z `Z10` dodał akcję „Przenieś do…”, która otwiera natywny dialog z wyborem
+docelowej kolumny i dokładnej pozycji. Korekta z `Z13` wyłączyła domyślny sensor
+klawiatury, ponieważ oparty na geometrii ruch nie zapewniał deterministycznego
+wyboru kolumny i pozycji. DnD korzysta wyłącznie z sensora wskaźnika, a dialog
+jest oficjalną metodą przenoszenia i zmiany kolejności z klawiatury. Obie ścieżki
+zatwierdzają tę samą semantyczną akcję reducera.
 
 ## 4. Formularze i style
 

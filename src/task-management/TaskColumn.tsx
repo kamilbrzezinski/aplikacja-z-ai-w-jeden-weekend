@@ -62,7 +62,6 @@ function SortableTaskCard({
     >
       <TaskCard
         compact
-        dragHandleId={`drag-handle-${task.id}`}
         dragHandleRef={(element) => {
           handleRef(element);
         }}
