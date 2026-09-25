@@ -1,5 +1,9 @@
 import { expect, test, type Page } from '@playwright/test';
 
+import type { AppState } from '../src/domain/model';
+
+const STORAGE_KEY = 'organizer-tygodnia:v1';
+
 async function addTask(
   page: Page,
   title: string,
@@ -22,7 +26,7 @@ async function addTask(
   await page.getByRole('button', { name: 'Dodaj zadanie' }).click();
 }
 
-async function keyboardMoveToThursday(
+async function moveWithDialogToThursday(
   page: Page,
   title: string,
   position?: 'first',
@@ -63,11 +67,11 @@ test.beforeEach(async ({ page }) => {
   await page.goto('/');
 });
 
-test('plans and reorders tasks with the keyboard, then restores the saved state', async ({
+test('moves and reorders tasks with the accessible dialog, then restores the saved state', async ({
   page,
 }) => {
   await addTask(page, 'Przygotować prezentację', 120, 'high');
-  await keyboardMoveToThursday(page, 'Przygotować prezentację');
+  await moveWithDialogToThursday(page, 'Przygotować prezentację');
 
   const thursday = page.getByRole('region', { name: 'Czwartek' });
 
@@ -78,7 +82,7 @@ test('plans and reorders tasks with the keyboard, then restores the saved state'
   ).toBeVisible();
 
   await addTask(page, 'Sprawdzić notatki', 30);
-  await keyboardMoveToThursday(page, 'Sprawdzić notatki');
+  await moveWithDialogToThursday(page, 'Sprawdzić notatki');
 
   await expect(
     thursday.getByRole('article', { name: 'Zadanie: Sprawdzić notatki' }),
@@ -98,12 +102,31 @@ test('plans and reorders tasks with the keyboard, then restores the saved state'
     return;
   }
 
-  await keyboardMoveToThursday(page, bottomTaskTitle, 'first');
+  await moveWithDialogToThursday(page, bottomTaskTitle, 'first');
 
   await expect(thursday.getByRole('article').nth(0)).toHaveAttribute(
     'aria-label',
     `Zadanie: ${bottomTaskTitle}`,
   );
+
+  const savedState = await page.evaluate((storageKey): AppState | null => {
+    const serializedState = window.localStorage.getItem(storageKey);
+
+    return serializedState ? (JSON.parse(serializedState) as AppState) : null;
+  }, STORAGE_KEY);
+
+  expect(savedState).not.toBeNull();
+
+  if (!savedState) {
+    return;
+  }
+
+  expect(savedState.columns.thursday).toHaveLength(2);
+  expect(
+    savedState.columns.thursday.map(
+      (taskId: string) => savedState.tasks[taskId]?.title,
+    ),
+  ).toEqual([bottomTaskTitle, 'Przygotować prezentację']);
 
   await page.reload();
 
@@ -120,14 +143,91 @@ test('plans and reorders tasks with the keyboard, then restores the saved state'
   ).toBeVisible();
 });
 
+test('cancels the move dialog with Escape without saving and restores focus', async ({
+  page,
+}) => {
+  const title = 'Anulować przenoszenie';
+
+  await addTask(page, title, 30);
+
+  const trigger = page.getByRole('button', {
+    name: `Przenieś do…: ${title}`,
+  });
+  const stateBeforeDialog = await page.evaluate(
+    (storageKey) => window.localStorage.getItem(storageKey),
+    STORAGE_KEY,
+  );
+
+  await trigger.focus();
+  await page.keyboard.press('Enter');
+
+  const dialog = page.getByRole('dialog', { name: 'Przenieś do…' });
+
+  await expect(dialog).toBeVisible();
+  await dialog
+    .getByRole('combobox', { name: 'Miejsce docelowe' })
+    .selectOption('friday');
+  await page.keyboard.press('Escape');
+
+  await expect(dialog).not.toBeVisible();
+  await expect(trigger).toBeFocused();
+  await expect(
+    page
+      .getByRole('region', { name: 'Do zaplanowania' })
+      .getByRole('article', { name: `Zadanie: ${title}` }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      (storageKey) => window.localStorage.getItem(storageKey),
+      STORAGE_KEY,
+    ),
+  ).toBe(stateBeforeDialog);
+});
+
+test('keeps the pointer handle outside keyboard navigation and the accessibility tree', async ({
+  page,
+}) => {
+  const title = 'Tylko wskaźnik';
+
+  await addTask(page, title, 30);
+
+  const pointerHandle = page.locator('[data-pointer-drag-handle]');
+  const taskCard = page.getByRole('article', { name: `Zadanie: ${title}` });
+  const sortableItem = taskCard.locator('xpath=ancestor::li');
+  const stateBeforeKeys = await page.evaluate(
+    (storageKey) => window.localStorage.getItem(storageKey),
+    STORAGE_KEY,
+  );
+
+  await expect(pointerHandle).toHaveCount(1);
+  await expect(pointerHandle).toHaveAttribute('aria-hidden', 'true');
+  await expect(pointerHandle).toHaveAttribute('role', 'presentation');
+  await expect(pointerHandle).toHaveAttribute('tabindex', '-1');
+  await expect(
+    page.getByRole('button', { name: `Przenieś: ${title}` }),
+  ).toHaveCount(0);
+
+  for (const key of [' ', 'Enter', 'ArrowRight']) {
+    await pointerHandle.dispatchEvent('keydown', { key });
+  }
+
+  await expect(sortableItem).not.toHaveAttribute('data-dragging', 'true');
+  expect(
+    await page.evaluate(
+      (storageKey) => window.localStorage.getItem(storageKey),
+      STORAGE_KEY,
+    ),
+  ).toBe(stateBeforeKeys);
+});
+
 test('moves a task to an empty day with a multi-step pointer drag', async ({
   page,
 }) => {
   await addTask(page, 'Przenieść wskaźnikiem', 45);
 
-  const handle = page.getByRole('button', {
-    name: 'Przenieś: Przenieść wskaźnikiem',
-  });
+  const handle = page
+    .getByRole('article', { name: 'Zadanie: Przenieść wskaźnikiem' })
+    .locator('[data-pointer-drag-handle]');
   const mondayDropzone = page.getByTestId('dropzone-monday');
   const handleBox = await handle.boundingBox();
   const targetBox = await mondayDropzone.boundingBox();

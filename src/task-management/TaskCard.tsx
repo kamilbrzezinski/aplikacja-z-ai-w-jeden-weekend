@@ -3,8 +3,7 @@ import styles from './TaskCard.module.css';
 
 interface TaskCardProps {
   compact?: boolean;
-  dragHandleId?: string;
-  dragHandleRef?: (element: HTMLButtonElement | null) => void;
+  dragHandleRef?: (element: HTMLDivElement | null) => void;
   task: StoredTask;
   onEdit: (taskId: string, trigger: HTMLButtonElement) => void;
   onMove: (taskId: string, trigger: HTMLButtonElement) => void;
@@ -20,7 +19,6 @@ const priorityLabels: Record<StoredTask['priority'], string> = {
 
 export function TaskCard({
   compact = false,
-  dragHandleId,
   dragHandleRef,
   task,
   onEdit,
@@ -41,14 +39,14 @@ export function TaskCard({
       data-status={task.status}
       aria-label={`Zadanie: ${task.title}`}
     >
-      <button
+      <div
         ref={dragHandleRef}
-        id={dragHandleId}
-        type="button"
         className={styles.dragHandle}
-        title="Uchwyt przeciągania"
-        aria-label={`Przenieś: ${task.title}`}
-        aria-describedby="dnd-instructions"
+        title="Przeciągnij wskaźnikiem"
+        aria-hidden="true"
+        role="presentation"
+        tabIndex={-1}
+        data-pointer-drag-handle
       >
         <span aria-hidden="true" />
         <span aria-hidden="true" />
@@ -56,7 +54,7 @@ export function TaskCard({
         <span aria-hidden="true" />
         <span aria-hidden="true" />
         <span aria-hidden="true" />
-      </button>
+      </div>
 
       <div className={styles.content}>
         <div className={styles.headingRow}>
@@ -97,6 +95,7 @@ export function TaskCard({
               type="button"
               className={styles.moveButton}
               aria-label={`Przenieś do…: ${task.title}`}
+              aria-describedby="move-task-instructions"
               onClick={(event) => {
                 onMove(task.id, event.currentTarget);
               }}

@@ -1,6 +1,7 @@
 import { move } from '@dnd-kit/helpers';
 import {
   DragDropProvider,
+  PointerSensor,
   type DragEndEvent,
   type DragOverEvent,
   type DragStartEvent,
@@ -28,6 +29,8 @@ interface TaskManagementProps {
   state: AppState;
   dispatch: Dispatch<AppAction>;
 }
+
+const pointerOnlySensors = [PointerSensor];
 
 function createTask(values: TaskFormValues): StoredTask {
   const timestamp = new Date().toISOString();
@@ -75,14 +78,6 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
       return task ? [task] : [];
     });
 
-  const restoreDragHandleFocus = (taskId: string) => {
-    window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => {
-        document.getElementById(`drag-handle-${taskId}`)?.focus();
-      });
-    });
-  };
-
   const handleDragStart = (event: DragStartEvent) => {
     const sourceId = event.operation.source?.id;
 
@@ -121,7 +116,6 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
 
     if (event.canceled || targetId == null) {
       updateDraft(cloneTaskColumns(snapshot));
-      restoreDragHandleFocus(sourceId);
       return;
     }
 
@@ -141,13 +135,11 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
 
     if (!action) {
       updateDraft(cloneTaskColumns(snapshot));
-      restoreDragHandleFocus(sourceId);
       return;
     }
 
     dispatch(action);
     updateDraft(finalDraft);
-    restoreDragHandleFocus(sourceId);
   };
 
   const addTask = (values: TaskFormValues) => {
@@ -264,13 +256,13 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
         </section>
       ) : null}
 
-      <p id="dnd-instructions" className={styles.visuallyHidden}>
-        Aby przenieść zadanie klawiaturą, ustaw fokus na uchwycie, rozpocznij
-        spacją lub Enterem, poruszaj strzałkami i zatwierdź spacją albo Enterem.
-        Naciśnij Esc, aby anulować.
+      <p id="move-task-instructions" className={styles.visuallyHidden}>
+        Aby przenieść zadanie lub zmienić jego kolejność klawiaturą, wybierz
+        przycisk „Przenieś do…”, a następnie miejsce docelowe i pozycję.
       </p>
 
       <DragDropProvider
+        sensors={pointerOnlySensors}
         onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}

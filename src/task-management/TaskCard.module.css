@@ -208,11 +208,6 @@
   background: var(--color-surface-muted);
 }
 
-.dragHandle:focus-visible {
-  outline: 3px solid var(--color-focus);
-  outline-offset: 2px;
-}
-
 .dragHandle:active {
   cursor: grabbing;
 }
