@@ -109,7 +109,7 @@ function SpikeColumn({ columnId, itemIds }: SpikeColumnProps) {
         data-testid={`dropzone-${columnId}`}
       >
         {itemIds.length === 0 ? (
-          <li className={styles.emptyState}>Upuść zadanie tutaj</li>
+          <li className={styles.emptyState}>Upuść zadanie</li>
         ) : (
           itemIds.map((id, index) => (
             <SortableSpikeItem

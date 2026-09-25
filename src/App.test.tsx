@@ -125,7 +125,7 @@ describe('App', () => {
       const column = screen.getByRole('region', { name: dayNames[day] });
 
       expect(
-        within(column).getByText('Upuść zadanie tutaj'),
+        within(column).getByText('Upuść zadanie'),
       ).toBeInTheDocument();
       expect(
         within(column).getByText('Zaplanowano: 0 min'),

@@ -144,7 +144,7 @@ describe('DndSpike drag lifecycle', () => {
     ).toBeInTheDocument();
     expect(
       within(screen.getByTestId('column-monday')).getByText(
-        'Upuść zadanie tutaj',
+        'Upuść zadanie',
       ),
     ).toBeInTheDocument();
   });

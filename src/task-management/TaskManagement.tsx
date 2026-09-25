@@ -308,7 +308,7 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
                   title={dayNames[day]}
                   tasks={tasksIn(day)}
                   summary={selectDaySummary(state, day)}
-                  emptyMessage="Upuść zadanie tutaj"
+                  emptyMessage="Upuść zadanie"
                   onEdit={(taskId, trigger) => {
                     editTriggerRef.current = trigger;
                     setEditedTaskId(taskId);
