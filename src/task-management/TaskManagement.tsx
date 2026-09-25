@@ -289,8 +289,7 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
         <section className={styles.week} aria-labelledby="week-heading">
           <div className={styles.weekHeading}>
             <div>
-              <p className={styles.sectionEyebrow}>Plan tygodnia</p>
-              <h2 id="week-heading">Od poniedziałku do niedzieli</h2>
+              <h2 id="week-heading">Plan tygodnia</h2>
             </div>
             <p>Na mniejszych ekranach przewiń planszę poziomo.</p>
           </div>

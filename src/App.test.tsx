@@ -113,7 +113,7 @@ describe('App', () => {
 
     expect(
       screen.getByRole('region', {
-        name: 'Od poniedziałku do niedzieli',
+        name: 'Plan tygodnia',
       }),
     ).toBeInTheDocument();
     expect(screen.getByLabelText('Kolumny dni tygodnia')).toHaveAttribute(
