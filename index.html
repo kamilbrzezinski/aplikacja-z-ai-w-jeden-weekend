@@ -8,6 +8,30 @@
       content="Organizer tygodnia pomagający rozłożyć zadania na poszczególne dni."
     />
     <title>Organizer tygodnia</title>
+    <!-- Ustawia motyw przed pierwszym renderem; musi być zgodny z src/theme/theme.ts. -->
+    <script>
+      (function () {
+        var preference = 'system';
+        var root = document.documentElement;
+
+        try {
+          var stored = window.localStorage.getItem('organizer-tygodnia:theme');
+          if (stored === 'system' || stored === 'light' || stored === 'dark') {
+            preference = stored;
+          }
+        } catch (_) {}
+
+        var theme =
+          preference === 'system'
+            ? window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+            : preference;
+        root.dataset.theme = theme;
+        root.dataset.themePreference = preference;
+        root.style.colorScheme = theme;
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

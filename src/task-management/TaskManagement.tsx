@@ -21,6 +21,7 @@ import type { AppAction } from '../domain/reducer';
 import { selectDaySummary } from '../domain/selectors';
 import { TaskEditDialog } from '../task-form/TaskEditDialog';
 import { TaskForm, type TaskFormValues } from '../task-form/TaskForm';
+import { ThemeMenu } from '../theme/ThemeMenu';
 import { TaskColumn } from './TaskColumn';
 import { TaskMoveDialog } from './TaskMoveDialog';
 import { cloneTaskColumns, createMoveTaskAction } from './dnd';
@@ -219,19 +220,22 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
             Zbierz zadania i rozłóż je na spokojny, wykonalny plan.
           </p>
         </div>
-        <button
-          ref={addTaskTriggerRef}
-          type="button"
-          className={styles.addTaskButton}
-          aria-expanded={isAddFormOpen}
-          aria-controls="add-task-panel"
-          onClick={() => {
-            setIsAddFormOpen((isOpen) => !isOpen);
-          }}
-        >
-          <span aria-hidden="true">{isAddFormOpen ? '−' : '+'}</span>
-          {isAddFormOpen ? 'Zwiń formularz' : 'Dodaj zadanie'}
-        </button>
+        <div className={styles.headerActions}>
+          <button
+            ref={addTaskTriggerRef}
+            type="button"
+            className={styles.addTaskButton}
+            aria-expanded={isAddFormOpen}
+            aria-controls="add-task-panel"
+            onClick={() => {
+              setIsAddFormOpen((isOpen) => !isOpen);
+            }}
+          >
+            <span aria-hidden="true">{isAddFormOpen ? '−' : '+'}</span>
+            {isAddFormOpen ? 'Zwiń formularz' : 'Dodaj zadanie'}
+          </button>
+          <ThemeMenu />
+        </div>
       </header>
 
       {isAddFormOpen ? (

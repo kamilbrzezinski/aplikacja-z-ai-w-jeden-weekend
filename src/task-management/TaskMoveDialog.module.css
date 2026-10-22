@@ -9,7 +9,7 @@
 }
 
 .dialog::backdrop {
-  background: rgb(29 42 36 / 58%);
+  background: var(--color-backdrop);
   backdrop-filter: blur(3px);
 }
 
@@ -35,8 +35,9 @@
 
 .eyebrow {
   color: var(--color-accent);
+  font-family: var(--font-mono);
   font-size: 0.75rem;
-  font-weight: 800;
+  font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
@@ -99,9 +100,14 @@
 }
 
 .primaryAction {
-  border: 1px solid var(--color-accent);
-  color: white;
-  background: var(--color-accent);
+  border: 1px solid var(--color-accent-fill);
+  color: var(--color-on-accent);
+  background: var(--color-accent-fill);
+}
+
+.primaryAction:hover {
+  border-color: var(--color-accent-fill-hover);
+  background: var(--color-accent-fill-hover);
 }
 
 .secondaryAction {

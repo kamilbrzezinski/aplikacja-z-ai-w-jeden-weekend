@@ -1,5 +1,5 @@
 .card {
-  --priority-color: #c18331;
+  --priority-color: var(--color-priority-medium);
 
   position: relative;
   display: grid;
@@ -15,11 +15,11 @@
 }
 
 .card[data-priority='low'] {
-  --priority-color: #4c7c68;
+  --priority-color: var(--color-priority-low);
 }
 
 .card[data-priority='high'] {
-  --priority-color: #b84b3e;
+  --priority-color: var(--color-priority-high);
 }
 
 .card[data-status='completed'] .title {
@@ -125,14 +125,14 @@
 }
 
 .completionControl input:checked + .checkboxVisual {
-  border-color: var(--color-accent);
-  background: var(--color-accent);
+  border-color: var(--color-accent-fill);
+  background: var(--color-accent-fill);
 }
 
 .completionControl input:checked + .checkboxVisual::after {
   width: 0.28rem;
   height: 0.55rem;
-  border: solid white;
+  border: solid var(--color-on-accent);
   border-width: 0 2px 2px 0;
   content: '';
   transform: translateY(-0.05rem) rotate(45deg);
@@ -184,7 +184,7 @@
 
 .actions .deleteButton:hover {
   color: var(--color-danger);
-  background: #f9e8e5;
+  background: var(--color-danger-soft);
 }
 
 .dragHandle {

@@ -73,6 +73,18 @@ Kolumny nie reprezentują konkretnych dat. Aplikacja nie zna aktualnego tygodnia
 
 Interfejs jest projektowany przede wszystkim dla ekranu komputera. Na dużym ekranie powinien pokazywać wszystkie siedem dni jednocześnie. Jeżeli kolumny nie mieszczą się w czytelnej szerokości, obszar tygodnia może przewijać się poziomo.
 
+### Wygląd i motyw
+
+Kolorystyka i typografia są zgodne z serwisem [Skillweb](https://www.skillweb.pl/): paleta slate z akcentem bursztynowym, krój Inter dla tekstu, Space Grotesk dla nagłówków i JetBrains Mono dla etykiet.
+
+W nagłówku znajduje się przełącznik motywu z trzema opcjami:
+
+- **Automatyczny** — zgodny z ustawieniem urządzenia i reagujący na jego zmianę (domyślny);
+- **Jasny** — zawsze jasny;
+- **Ciemny** — zawsze ciemny.
+
+Wybór jest zapamiętywany w przeglądarce. Oba motywy zachowują kontrast tekstu zgodny z WCAG AA.
+
 ### Karta zadania
 
 Każda karta pokazuje co najmniej:
@@ -150,6 +162,8 @@ Aplikacja:
 - odtwarza stan po odświeżeniu lub ponownym otwarciu strony w tej samej przeglądarce;
 - rozpoczyna pracę z pustą tablicą, jeśli nie istnieją zapisane dane;
 - nie powinna przestać działać, jeśli zapisane dane są uszkodzone — w takim przypadku może uruchomić pustą tablicę.
+
+Preferencja motywu jest zapisywana osobno, poza danymi zadań. Jej brak lub niepoprawna wartość oznacza motyw automatyczny.
 
 Wyczyszczenie danych przeglądarki oznacza utratę zadań. W MVP nie ma kopii zapasowej ani synchronizacji.
 

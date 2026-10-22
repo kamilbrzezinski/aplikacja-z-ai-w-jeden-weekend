@@ -1,30 +1,43 @@
+@import '@fontsource-variable/inter';
+@import '@fontsource-variable/space-grotesk';
+@import '@fontsource-variable/jetbrains-mono';
+
+/* Paleta i typografia odwzorowują https://www.skillweb.pl/ (slate + amber). */
 :root {
-  color: #202a25;
-  background: #f3f5f1;
-  font-family:
-    Inter,
-    ui-sans-serif,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    sans-serif;
+  color-scheme: light;
+  font-family: var(--font-sans);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 
-  --color-text: #202a25;
-  --color-text-muted: #65716a;
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-heading:
+    'Space Grotesk Variable', 'Inter Variable', ui-sans-serif, sans-serif;
+  --font-mono:
+    'JetBrains Mono Variable', ui-monospace, SFMono-Regular, monospace;
+
+  --color-page: #f8fafc;
+  --color-text: #0f172a;
+  --color-text-muted: #475569;
+  --color-text-faint: #64748b;
   --color-surface: #ffffff;
-  --color-surface-muted: #f6f7f4;
-  --color-board: #f7f8f5;
-  --color-border: #e0e5df;
-  --color-border-strong: #bdc7bf;
-  --color-card-border: #dce2dc;
-  --color-accent: #347452;
-  --color-accent-strong: #295f42;
-  --color-accent-soft: #e4f1e9;
-  --color-focus: #9b5f17;
-  --color-danger: #a12e2e;
+  --color-surface-muted: #f1f5f9;
+  --color-board: #f8fafc;
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+  --color-card-border: #e2e8f0;
+  --color-accent: #b45309;
+  --color-accent-strong: #92400e;
+  --color-accent-soft: #fef3e2;
+  --color-accent-fill: #f59f0a;
+  --color-accent-fill-hover: #fbbf24;
+  --color-on-accent: #0f172a;
+  --color-focus: #b45309;
+  --color-danger: #b91c1c;
+  --color-danger-soft: #fee2e2;
+  --color-backdrop: rgb(15 23 42 / 58%);
+  --color-priority-low: #4c7c68;
+  --color-priority-medium: #c18331;
+  --color-priority-high: #b84b3e;
   --color-day-monday: #7567bd;
   --color-day-monday-soft: #efecfb;
   --color-day-tuesday: #4787b2;
@@ -39,12 +52,85 @@
   --color-day-saturday-soft: #eeeafa;
   --color-day-sunday: #b56e4f;
   --color-day-sunday-soft: #faece5;
-  --shadow-card: 0 1.5rem 4rem rgb(42 55 47 / 12%);
-  --shadow-subtle: 0 0.75rem 2rem rgb(42 55 47 / 8%);
-  --shadow-task: 0 1px 2px rgb(42 55 47 / 7%);
+  --shadow-card: 0 1.5rem 4rem rgb(15 23 42 / 12%);
+  --shadow-subtle: 0 0.75rem 2rem rgb(15 23 42 / 8%);
+  --shadow-task: 0 1px 2px rgb(15 23 42 / 7%);
   --radius-panel: 1rem;
   --radius-control: 0.75rem;
   --radius-card: 0.65rem;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-page: #12151a;
+  --color-text: #dee3e9;
+  --color-text-muted: #9aa3af;
+  --color-text-faint: #868f9c;
+  --color-surface: #1c212a;
+  --color-surface-muted: #232935;
+  --color-board: #171b22;
+  --color-border: #2b323e;
+  --color-border-strong: #3d4553;
+  --color-card-border: #2b323e;
+  --color-accent: #e3a75e;
+  --color-accent-strong: #f0c48d;
+  --color-accent-soft: #2b2a28;
+  --color-accent-fill: #e3a75e;
+  --color-accent-fill-hover: #f0c48d;
+  --color-on-accent: #16130e;
+  --color-focus: #e3a75e;
+  --color-danger: #f87171;
+  --color-danger-soft: #3a2328;
+  --color-backdrop: rgb(0 0 0 / 65%);
+  --color-priority-low: #74bf9e;
+  --color-priority-medium: #e3a75e;
+  --color-priority-high: #f08a7c;
+  --color-day-monday: #a197e6;
+  --color-day-tuesday: #7fb6dc;
+  --color-day-wednesday: #74bf9e;
+  --color-day-thursday: #e0a95c;
+  --color-day-friday: #e48c9d;
+  --color-day-saturday: #ab98d8;
+  --color-day-sunday: #e39a79;
+  --color-day-monday-soft: color-mix(
+    in srgb,
+    var(--color-day-monday) 12%,
+    var(--color-surface)
+  );
+  --color-day-tuesday-soft: color-mix(
+    in srgb,
+    var(--color-day-tuesday) 12%,
+    var(--color-surface)
+  );
+  --color-day-wednesday-soft: color-mix(
+    in srgb,
+    var(--color-day-wednesday) 12%,
+    var(--color-surface)
+  );
+  --color-day-thursday-soft: color-mix(
+    in srgb,
+    var(--color-day-thursday) 12%,
+    var(--color-surface)
+  );
+  --color-day-friday-soft: color-mix(
+    in srgb,
+    var(--color-day-friday) 12%,
+    var(--color-surface)
+  );
+  --color-day-saturday-soft: color-mix(
+    in srgb,
+    var(--color-day-saturday) 12%,
+    var(--color-surface)
+  );
+  --color-day-sunday-soft: color-mix(
+    in srgb,
+    var(--color-day-sunday) 12%,
+    var(--color-surface)
+  );
+  --shadow-card: 0 1.5rem 4rem rgb(0 0 0 / 40%);
+  --shadow-subtle: 0 0.75rem 2rem rgb(0 0 0 / 32%);
+  --shadow-task: 0 1px 2px rgb(0 0 0 / 32%);
 }
 
 * {
@@ -55,6 +141,23 @@ body {
   min-width: 20rem;
   min-height: 100vh;
   margin: 0;
+  color: var(--color-text);
+  background: var(--color-page);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+::selection {
+  color: var(--color-on-accent);
+  background: var(--color-accent-fill);
 }
 
 button,
