@@ -2,15 +2,13 @@
   width: min(calc(100% - 2rem), 34rem);
   padding: 0;
   border: 1px solid var(--color-border);
-  border-radius: 1.25rem;
+  border-radius: var(--radius-panel);
   color: var(--color-text);
   background: var(--color-surface);
-  box-shadow: var(--shadow-card);
 }
 
 .dialog::backdrop {
   background: var(--color-backdrop);
-  backdrop-filter: blur(3px);
 }
 
 .content {
@@ -22,24 +20,13 @@
 }
 
 .heading h2,
-.eyebrow,
 .taskName,
 .currentLocation {
   margin: 0;
 }
 
 .heading h2 {
-  margin-top: 0.3rem;
-  font-size: clamp(1.5rem, 4vw, 2rem);
-}
-
-.eyebrow {
-  color: var(--color-accent);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 1.375rem;
 }
 
 .form {
@@ -65,15 +52,15 @@
 
 .field label {
   font-size: 0.86rem;
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .field select {
   width: 100%;
-  min-height: 2.8rem;
+  min-height: 2.5rem;
   padding: 0.65rem 0.75rem;
   border: 1px solid var(--color-border-strong);
-  border-radius: 0.65rem;
+  border-radius: var(--radius-control);
   color: var(--color-text);
   background: var(--color-surface);
 }
@@ -86,16 +73,16 @@
 }
 
 .actions button {
-  min-height: 2.8rem;
+  min-height: 2.5rem;
   padding: 0.65rem 1rem;
-  border-radius: 0.65rem;
-  font-weight: 700;
+  border-radius: var(--radius-control);
+  font-weight: 600;
   cursor: pointer;
 }
 
 .field select:focus-visible,
 .actions button:focus-visible {
-  outline: 3px solid var(--color-focus);
+  outline: 2px solid var(--color-focus);
   outline-offset: 2px;
 }
 

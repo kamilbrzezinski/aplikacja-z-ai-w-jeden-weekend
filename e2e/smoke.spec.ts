@@ -100,9 +100,14 @@ test('adds and edits a task, while Escape cancels and restores focus', async ({
   await expect(addDuration).toHaveValue('30');
 
   const editTrigger = page.getByRole('button', {
-    name: 'Edytuj: Przygotować prezentację',
+    name: 'Akcje: Przygotować prezentację',
   });
   await editTrigger.focus();
+  await page.keyboard.press('Enter');
+  await page.keyboard.press('ArrowDown');
+  await expect(
+    page.getByRole('menuitem', { name: 'Edytuj: Przygotować prezentację' }),
+  ).toBeFocused();
   await page.keyboard.press('Enter');
 
   const dialog = page.getByRole('dialog', { name: 'Popraw szczegóły' });
@@ -119,6 +124,9 @@ test('adds and edits a task, while Escape cancels and restores focus', async ({
   await expect(page.getByText('Niezapisana nazwa')).not.toBeVisible();
 
   await editTrigger.click();
+  await page
+    .getByRole('menuitem', { name: 'Edytuj: Przygotować prezentację' })
+    .click();
   await expect(dialog).toBeVisible();
   await dialog
     .getByRole('textbox', { name: 'Nazwa' })
@@ -132,6 +140,6 @@ test('adds and edits a task, while Escape cancels and restores focus', async ({
   await expect(page.getByText('Niski priorytet')).toBeVisible();
   await expect(page.getByText('45 min')).toBeVisible();
   await expect(
-    page.getByRole('button', { name: 'Edytuj: Prezentacja kwartalna' }),
+    page.getByRole('button', { name: 'Akcje: Prezentacja kwartalna' }),
   ).toBeFocused();
 });

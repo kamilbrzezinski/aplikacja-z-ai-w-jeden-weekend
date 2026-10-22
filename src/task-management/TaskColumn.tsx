@@ -1,5 +1,6 @@
 import { useDroppable } from '@dnd-kit/react';
 import { useSortable } from '@dnd-kit/react/sortable';
+import type { CSSProperties } from 'react';
 
 import {
   formatDuration,
@@ -7,6 +8,7 @@ import {
   type TaskLocation,
 } from '../domain/model';
 import type { DaySummary } from '../domain/selectors';
+import { PlusIcon } from './icons';
 import { TaskCard } from './TaskCard';
 import { COLUMN_COLLISION_PRIORITY, TASK_DRAG_TYPE } from './dnd';
 import styles from './TaskColumn.module.css';
@@ -23,6 +25,12 @@ interface TaskColumnProps {
   summary?: DaySummary;
   tasks: StoredTask[];
   title: string;
+}
+
+function completedShare({ plannedMinutes, remainingMinutes }: DaySummary) {
+  return plannedMinutes === 0
+    ? 0
+    : (plannedMinutes - remainingMinutes) / plannedMinutes;
 }
 
 interface SortableTaskCardProps {
@@ -61,7 +69,7 @@ function SortableTaskCard({
       data-drop-target={isDropTarget || undefined}
     >
       <TaskCard
-        compact
+        headingLevel={location === 'backlog' ? 3 : 4}
         dragHandleRef={(element) => {
           handleRef(element);
         }}
@@ -112,7 +120,11 @@ export function TaskColumn({
         ) : (
           <h3 id={headingId}>{title}</h3>
         )}
-        <span className={styles.count} aria-label={taskCountLabel}>
+        <span
+          className={styles.count}
+          aria-label={taskCountLabel}
+          data-empty={tasks.length === 0 || undefined}
+        >
           {tasks.length}
         </span>
       </header>
@@ -128,7 +140,7 @@ export function TaskColumn({
             <p>{emptyMessage}</p>
             {emptyActionLabel && onEmptyAction ? (
               <button type="button" onClick={onEmptyAction}>
-                <span aria-hidden="true">+</span>
+                <PlusIcon size={16} />
                 {emptyActionLabel}
               </button>
             ) : null}
@@ -155,10 +167,19 @@ export function TaskColumn({
         <footer
           className={styles.summary}
           aria-label={`Podsumowanie — ${title}`}
+          data-empty={summary.plannedMinutes === 0 || undefined}
         >
-          <span>Zaplanowano: {formatDuration(summary.plannedMinutes)}</span>
-          <span aria-hidden="true">·</span>
-          <span>Pozostało: {formatDuration(summary.remainingMinutes)}</span>
+          <span>{`Zaplanowano:\n${formatDuration(summary.plannedMinutes)}`}</span>
+          <span>{`Pozostało:\n${formatDuration(summary.remainingMinutes)}`}</span>
+          <span
+            className={styles.progress}
+            aria-hidden="true"
+            style={
+              {
+                '--done': `${completedShare(summary) * 100}%`,
+              } as CSSProperties
+            }
+          />
         </footer>
       ) : null}
     </section>

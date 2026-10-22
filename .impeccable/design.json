@@ -1,0 +1,811 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-22T00:00:00Z",
+  "title": "Design System: Organizer tygodnia",
+  "extensions": {
+    "colorMeta": {
+      "accent": {
+        "role": "primary",
+        "displayName": "Bursztyn Skillweb, atrament",
+        "cssVar": "--color-accent",
+        "tonalRamp": [
+          "#78350f",
+          "#92400e",
+          "#b45309",
+          "#d97706",
+          "#f59e0b",
+          "#fbbf24",
+          "#fcd34d",
+          "#fef3c7"
+        ]
+      },
+      "accent-dark": {
+        "role": "primary",
+        "displayName": "Bursztyn Skillweb, atrament (ciemny motyw)",
+        "cssVar": "--color-accent",
+        "theme": "dark",
+        "tonalRamp": [
+          "#4a3214",
+          "#6e4a1e",
+          "#93632a",
+          "#b87c36",
+          "#d6944a",
+          "#e3a75e",
+          "#f0c48d",
+          "#f8e2c4"
+        ]
+      },
+      "accent-fill": {
+        "role": "primary",
+        "displayName": "Bursztyn Skillweb, wypełnienie",
+        "cssVar": "--color-accent-fill",
+        "tonalRamp": [
+          "#78350f",
+          "#92400e",
+          "#b45309",
+          "#d97706",
+          "#f59e0b",
+          "#fbbf24",
+          "#fcd34d",
+          "#fef3c7"
+        ]
+      },
+      "accent-fill-dark": {
+        "role": "primary",
+        "displayName": "Bursztyn Skillweb, wypełnienie (ciemny motyw)",
+        "cssVar": "--color-accent-fill",
+        "theme": "dark",
+        "tonalRamp": [
+          "#4a3214",
+          "#6e4a1e",
+          "#93632a",
+          "#b87c36",
+          "#d6944a",
+          "#e3a75e",
+          "#f0c48d",
+          "#f8e2c4"
+        ]
+      },
+      "accent-fill-hover": {
+        "role": "primary",
+        "displayName": "Bursztyn jasny (hover)",
+        "cssVar": "--color-accent-fill-hover",
+        "tonalRamp": [
+          "#78350f",
+          "#92400e",
+          "#b45309",
+          "#d97706",
+          "#f59e0b",
+          "#fbbf24",
+          "#fcd34d",
+          "#fef3c7"
+        ]
+      },
+      "accent-fill-hover-dark": {
+        "role": "primary",
+        "displayName": "Bursztyn jasny (hover) (ciemny motyw)",
+        "cssVar": "--color-accent-fill-hover",
+        "theme": "dark",
+        "tonalRamp": [
+          "#4a3214",
+          "#6e4a1e",
+          "#93632a",
+          "#b87c36",
+          "#d6944a",
+          "#e3a75e",
+          "#f0c48d",
+          "#f8e2c4"
+        ]
+      },
+      "accent-soft": {
+        "role": "primary",
+        "displayName": "Bursztynowa mgiełka",
+        "cssVar": "--color-accent-soft",
+        "tonalRamp": [
+          "#78350f",
+          "#92400e",
+          "#b45309",
+          "#d97706",
+          "#f59e0b",
+          "#fbbf24",
+          "#fcd34d",
+          "#fef3c7"
+        ]
+      },
+      "accent-soft-dark": {
+        "role": "primary",
+        "displayName": "Bursztynowa mgiełka (ciemny motyw)",
+        "cssVar": "--color-accent-soft",
+        "theme": "dark",
+        "tonalRamp": [
+          "#4a3214",
+          "#6e4a1e",
+          "#93632a",
+          "#b87c36",
+          "#d6944a",
+          "#e3a75e",
+          "#f0c48d",
+          "#f8e2c4"
+        ]
+      },
+      "on-accent": {
+        "role": "neutral",
+        "displayName": "Atrament na bursztynie",
+        "cssVar": "--color-on-accent",
+        "tonalRamp": [
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#94a3b8",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "on-accent-dark": {
+        "role": "neutral",
+        "displayName": "Atrament na bursztynie (ciemny motyw)",
+        "cssVar": "--color-on-accent",
+        "theme": "dark",
+        "tonalRamp": [
+          "#12151a",
+          "#171b22",
+          "#1c212a",
+          "#232935",
+          "#2b323e",
+          "#3d4553",
+          "#868f9c",
+          "#dee3e9"
+        ]
+      },
+      "focus": {
+        "role": "primary",
+        "displayName": "Fokus",
+        "cssVar": "--color-focus",
+        "tonalRamp": [
+          "#78350f",
+          "#92400e",
+          "#b45309",
+          "#d97706",
+          "#f59e0b",
+          "#fbbf24",
+          "#fcd34d",
+          "#fef3c7"
+        ]
+      },
+      "focus-dark": {
+        "role": "primary",
+        "displayName": "Fokus (ciemny motyw)",
+        "cssVar": "--color-focus",
+        "theme": "dark",
+        "tonalRamp": [
+          "#4a3214",
+          "#6e4a1e",
+          "#93632a",
+          "#b87c36",
+          "#d6944a",
+          "#e3a75e",
+          "#f0c48d",
+          "#f8e2c4"
+        ]
+      },
+      "page": {
+        "role": "neutral",
+        "displayName": "Strona",
+        "cssVar": "--color-page",
+        "tonalRamp": [
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#94a3b8",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "page-dark": {
+        "role": "neutral",
+        "displayName": "Strona (ciemny motyw)",
+        "cssVar": "--color-page",
+        "theme": "dark",
+        "tonalRamp": [
+          "#12151a",
+          "#171b22",
+          "#1c212a",
+          "#232935",
+          "#2b323e",
+          "#3d4553",
+          "#868f9c",
+          "#dee3e9"
+        ]
+      },
+      "board": {
+        "role": "neutral",
+        "displayName": "Plansza",
+        "cssVar": "--color-board",
+        "tonalRamp": [
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#94a3b8",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "board-dark": {
+        "role": "neutral",
+        "displayName": "Plansza (ciemny motyw)",
+        "cssVar": "--color-board",
+        "theme": "dark",
+        "tonalRamp": [
+          "#12151a",
+          "#171b22",
+          "#1c212a",
+          "#232935",
+          "#2b323e",
+          "#3d4553",
+          "#868f9c",
+          "#dee3e9"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Powierzchnia",
+        "cssVar": "--color-surface",
+        "tonalRamp": [
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#94a3b8",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "surface-dark": {
+        "role": "neutral",
+        "displayName": "Powierzchnia (ciemny motyw)",
+        "cssVar": "--color-surface",
+        "theme": "dark",
+        "tonalRamp": [
+          "#12151a",
+          "#171b22",
+          "#1c212a",
+          "#232935",
+          "#2b323e",
+          "#3d4553",
+          "#868f9c",
+          "#dee3e9"
+        ]
+      },
+      "surface-muted": {
+        "role": "neutral",
+        "displayName": "Powierzchnia przygaszona",
+        "cssVar": "--color-surface-muted",
+        "tonalRamp": [
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#94a3b8",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "surface-muted-dark": {
+        "role": "neutral",
+        "displayName": "Powierzchnia przygaszona (ciemny motyw)",
+        "cssVar": "--color-surface-muted",
+        "theme": "dark",
+        "tonalRamp": [
+          "#12151a",
+          "#171b22",
+          "#1c212a",
+          "#232935",
+          "#2b323e",
+          "#3d4553",
+          "#868f9c",
+          "#dee3e9"
+        ]
+      },
+      "text": {
+        "role": "neutral",
+        "displayName": "Tekst",
+        "cssVar": "--color-text",
+        "tonalRamp": [
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#94a3b8",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "text-dark": {
+        "role": "neutral",
+        "displayName": "Tekst (ciemny motyw)",
+        "cssVar": "--color-text",
+        "theme": "dark",
+        "tonalRamp": [
+          "#12151a",
+          "#171b22",
+          "#1c212a",
+          "#232935",
+          "#2b323e",
+          "#3d4553",
+          "#868f9c",
+          "#dee3e9"
+        ]
+      },
+      "text-muted": {
+        "role": "neutral",
+        "displayName": "Tekst przygaszony",
+        "cssVar": "--color-text-muted",
+        "tonalRamp": [
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#94a3b8",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "text-muted-dark": {
+        "role": "neutral",
+        "displayName": "Tekst przygaszony (ciemny motyw)",
+        "cssVar": "--color-text-muted",
+        "theme": "dark",
+        "tonalRamp": [
+          "#12151a",
+          "#171b22",
+          "#1c212a",
+          "#232935",
+          "#2b323e",
+          "#3d4553",
+          "#868f9c",
+          "#dee3e9"
+        ]
+      },
+      "text-faint": {
+        "role": "neutral",
+        "displayName": "Tekst najsłabszy",
+        "cssVar": "--color-text-faint",
+        "tonalRamp": [
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#94a3b8",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "text-faint-dark": {
+        "role": "neutral",
+        "displayName": "Tekst najsłabszy (ciemny motyw)",
+        "cssVar": "--color-text-faint",
+        "theme": "dark",
+        "tonalRamp": [
+          "#12151a",
+          "#171b22",
+          "#1c212a",
+          "#232935",
+          "#2b323e",
+          "#3d4553",
+          "#868f9c",
+          "#dee3e9"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Linia",
+        "cssVar": "--color-border",
+        "tonalRamp": [
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#94a3b8",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "border-dark": {
+        "role": "neutral",
+        "displayName": "Linia (ciemny motyw)",
+        "cssVar": "--color-border",
+        "theme": "dark",
+        "tonalRamp": [
+          "#12151a",
+          "#171b22",
+          "#1c212a",
+          "#232935",
+          "#2b323e",
+          "#3d4553",
+          "#868f9c",
+          "#dee3e9"
+        ]
+      },
+      "border-soft": {
+        "role": "neutral",
+        "displayName": "Linia miękka",
+        "cssVar": "--color-border-soft",
+        "tonalRamp": [
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#94a3b8",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "border-soft-dark": {
+        "role": "neutral",
+        "displayName": "Linia miękka (ciemny motyw)",
+        "cssVar": "--color-border-soft",
+        "theme": "dark",
+        "tonalRamp": [
+          "#12151a",
+          "#171b22",
+          "#1c212a",
+          "#232935",
+          "#2b323e",
+          "#3d4553",
+          "#868f9c",
+          "#dee3e9"
+        ]
+      },
+      "border-strong": {
+        "role": "neutral",
+        "displayName": "Linia mocna",
+        "cssVar": "--color-border-strong",
+        "tonalRamp": [
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#94a3b8",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "border-strong-dark": {
+        "role": "neutral",
+        "displayName": "Linia mocna (ciemny motyw)",
+        "cssVar": "--color-border-strong",
+        "theme": "dark",
+        "tonalRamp": [
+          "#12151a",
+          "#171b22",
+          "#1c212a",
+          "#232935",
+          "#2b323e",
+          "#3d4553",
+          "#868f9c",
+          "#dee3e9"
+        ]
+      },
+      "danger": {
+        "role": "semantic",
+        "displayName": "Błąd",
+        "cssVar": "--color-danger",
+        "tonalRamp": [
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#ef4444",
+          "#f87171",
+          "#fca5a5",
+          "#fee2e2"
+        ]
+      },
+      "danger-dark": {
+        "role": "semantic",
+        "displayName": "Błąd (ciemny motyw)",
+        "cssVar": "--color-danger",
+        "theme": "dark",
+        "tonalRamp": [
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#ef4444",
+          "#f87171",
+          "#fca5a5",
+          "#fee2e2"
+        ]
+      },
+      "danger-soft": {
+        "role": "semantic",
+        "displayName": "Tło błędu",
+        "cssVar": "--color-danger-soft",
+        "tonalRamp": [
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#ef4444",
+          "#f87171",
+          "#fca5a5",
+          "#fee2e2"
+        ]
+      },
+      "danger-soft-dark": {
+        "role": "semantic",
+        "displayName": "Tło błędu (ciemny motyw)",
+        "cssVar": "--color-danger-soft",
+        "theme": "dark",
+        "tonalRamp": [
+          "#7f1d1d",
+          "#991b1b",
+          "#b91c1c",
+          "#dc2626",
+          "#ef4444",
+          "#f87171",
+          "#fca5a5",
+          "#fee2e2"
+        ]
+      },
+      "backdrop": {
+        "role": "neutral",
+        "displayName": "Zasłona",
+        "cssVar": "--color-backdrop",
+        "tonalRamp": [
+          "#0f172a",
+          "#1e293b",
+          "#334155",
+          "#475569",
+          "#64748b",
+          "#94a3b8",
+          "#cbd5e1",
+          "#f1f5f9"
+        ]
+      },
+      "backdrop-dark": {
+        "role": "neutral",
+        "displayName": "Zasłona (ciemny motyw)",
+        "cssVar": "--color-backdrop",
+        "theme": "dark",
+        "tonalRamp": [
+          "#12151a",
+          "#171b22",
+          "#1c212a",
+          "#232935",
+          "#2b323e",
+          "#3d4553",
+          "#868f9c",
+          "#dee3e9"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Tytuł dialogu."
+      },
+      "title-app": {
+        "displayName": "Title App",
+        "purpose": "H1 „Mój tydzień” w pasku nagłówka, po znaku ◆."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Nazwy dni, „Do zaplanowania”, nagłówek panelu dodawania."
+      },
+      "body-task": {
+        "displayName": "Body Task",
+        "purpose": "Tytuł zadania w backlogu i na wąskim ekranie."
+      },
+      "body-task-day": {
+        "displayName": "Body Task Day",
+        "purpose": "Tytuł zadania w kolumnie dnia na szerokim ekranie."
+      },
+      "field": {
+        "displayName": "Field",
+        "purpose": "Tekst wpisywany w polach formularza."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Pozycje menu i ich opisy."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Tekst pustej kolumny."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Etykiety pól formularza."
+      },
+      "button": {
+        "displayName": "Button",
+        "purpose": "Przyciski akcji."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Czas zadania, liczniki kolumn, stopka dnia; cyfry tabelaryczne."
+      }
+    },
+    "themes": {
+      "switch": ":root[data-theme='dark']",
+      "note": "Tokeny z sufiksem -dark to wartości tej samej zmiennej --color-* w ciemnym motywie; preferencja system/light/dark."
+    },
+    "shadows": [
+      {
+        "name": "drop-ring",
+        "value": "inset 0 0 0 1px var(--color-accent-fill)",
+        "purpose": "Jedyny box-shadow: pierścień zamiast obrysu na strefie upuszczania. Nie jest elewacją."
+      }
+    ],
+    "focus": [
+      {
+        "name": "focus-ring",
+        "value": "outline: 2px solid var(--color-focus); outline-offset: 2px",
+        "purpose": "Fokus każdej interaktywnej kontrolki."
+      }
+    ],
+    "motion": [],
+    "breakpoints": [
+      {
+        "name": "stack",
+        "value": "59.99rem",
+        "purpose": "Poniżej: jedna kolumna, dni pionowo."
+      },
+      {
+        "name": "form-stack",
+        "value": "44rem",
+        "purpose": "Poniżej: pola formularza jedno pod drugim."
+      },
+      {
+        "name": "compact",
+        "value": "30rem",
+        "purpose": "Poniżej: zagęszczony nagłówek."
+      },
+      {
+        "name": "coarse",
+        "value": "(pointer: coarse)",
+        "purpose": "Cele dotykowe 2.75rem."
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Przycisk główny",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Jedna akcja główna na widok: „Dodaj zadanie”, „Zapisz”, „Przenieś”.",
+      "html": "<button class=\"ds-btn-primary\"><svg aria-hidden=\"true\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 5v14M5 12h14\"/></svg>Dodaj zadanie</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 0.5rem; min-height: 2.5rem; padding: 0.5rem 0.9rem; border: 1px solid var(--color-accent-fill); border-radius: var(--radius-control); color: var(--color-on-accent); background: var(--color-accent-fill); font-family: var(--font-sans); font-size: 0.9375rem; font-weight: 600; cursor: pointer; } .ds-btn-primary:hover { border-color: var(--color-accent-fill-hover); background: var(--color-accent-fill-hover); } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+    },
+    {
+      "name": "Przycisk neutralny",
+      "kind": "button",
+      "refersTo": "button-neutral",
+      "description": "Akcja drugorzędna: pusty stan, rozwinięte „Dodaj zadanie”.",
+      "html": "<button class=\"ds-btn-neutral\"><svg aria-hidden=\"true\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 5v14M5 12h14\"/></svg>Dodaj zadanie</button>",
+      "css": ".ds-btn-neutral { display: inline-flex; align-items: center; gap: 0.4rem; min-height: 2.25rem; padding: 0.4rem 0.75rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius-control); color: var(--color-text); background: var(--color-surface); font-family: var(--font-sans); font-size: 0.875rem; font-weight: 600; cursor: pointer; } .ds-btn-neutral:hover { border-color: var(--color-text-faint); background: var(--color-surface-muted); } .ds-btn-neutral:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+    },
+    {
+      "name": "Przycisk ikony (motyw)",
+      "kind": "button",
+      "refersTo": "icon-button",
+      "description": "Kwadratowy wyzwalacz menu motywu w pasku nagłówka.",
+      "html": "<button class=\"ds-icon-btn\" aria-label=\"Motyw\"><svg aria-hidden=\"true\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2M12 20v2M4.93 4.93l1.42 1.42M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.42-1.42M17.66 6.34l1.41-1.41\"/></svg></button>",
+      "css": ".ds-icon-btn { display: inline-flex; width: 2.5rem; height: 2.5rem; align-items: center; justify-content: center; border: 1px solid var(--color-border); border-radius: var(--radius-control); color: var(--color-text); background: var(--color-surface); cursor: pointer; } .ds-icon-btn:hover { border-color: var(--color-border-strong); background: var(--color-surface-muted); } .ds-icon-btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+    },
+    {
+      "name": "Pole formularza",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Pole tekstowe lub liczbowe z etykietą nad nim.",
+      "html": "<div class=\"ds-field\"><label for=\"ds-t\">Tytuł</label><input id=\"ds-t\" class=\"ds-input\" value=\"Przegląd kodu\"></div>",
+      "css": ".ds-field { display: grid; gap: 0.45rem; font-family: var(--font-sans); color: var(--color-text); } .ds-field label { font-size: 0.875rem; font-weight: 500; } .ds-input { min-height: 2.5rem; padding: 0.65rem 0.75rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius-control); color: var(--color-text); background: var(--color-surface); font: inherit; font-size: 1rem; caret-color: var(--color-accent); } .ds-input:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; } .ds-input[aria-invalid='true'] { border-color: var(--color-danger); }"
+    },
+    {
+      "name": "Menu akcji zadania",
+      "kind": "custom",
+      "refersTo": "menu",
+      "description": "Menu „…” wiersza: Przenieś do…, Edytuj, Usuń.",
+      "html": "<div class=\"ds-menu\" role=\"menu\"><button class=\"ds-menu-item\" role=\"menuitem\"><svg aria-hidden=\"true\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h14M13 6l6 6-6 6\"/></svg>Przenieś do…</button><button class=\"ds-menu-item\" role=\"menuitem\"><svg aria-hidden=\"true\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 20h4L19 9l-4-4L4 16v4ZM13.5 6.5l4 4\"/></svg>Edytuj</button><button class=\"ds-menu-item\" data-tone=\"danger\" role=\"menuitem\"><svg aria-hidden=\"true\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3\"/></svg>Usuń</button></div>",
+      "css": ".ds-menu { display: grid; min-width: 11rem; padding: 0.25rem; border: 1px solid var(--color-border-strong); border-radius: var(--radius-panel); background: var(--color-surface); } .ds-menu-item { display: flex; align-items: center; gap: 0.6rem; min-height: 2.25rem; padding: 0.4rem 0.6rem; border: 0; border-radius: var(--radius-control); color: var(--color-text); background: transparent; font-family: var(--font-sans); font-size: 0.875rem; text-align: left; cursor: pointer; } .ds-menu-item svg { color: var(--color-text-faint); } .ds-menu-item:hover { background: var(--color-surface-muted); } .ds-menu-item:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; } .ds-menu-item[data-tone='danger'] { color: var(--color-danger); } .ds-menu-item[data-tone='danger'] svg { color: currentColor; } .ds-menu-item[data-tone='danger']:hover { background: var(--color-danger-soft); }"
+    },
+    {
+      "name": "Wiersz zadania",
+      "kind": "card",
+      "refersTo": "task-row",
+      "description": "Zadanie jako wiersz notatnika: pole wyboru, tytuł, uchwyt, czas mono, „…”.",
+      "html": "<article class=\"ds-task\"><label class=\"ds-task-check\"><input type=\"checkbox\" aria-label=\"Wykonane\"><span></span></label><h4 class=\"ds-task-title\">Przygotować prezentację dla zarządu</h4><span class=\"ds-task-handle\" aria-hidden=\"true\"><i></i><i></i><i></i><i></i><i></i><i></i></span><p class=\"ds-task-meta\"><span class=\"ds-task-prio\"><svg aria-hidden=\"true\" width=\"10\" height=\"10\" viewBox=\"0 0 10 10\"><path d=\"M5 1.5 9 8.5H1Z\" fill=\"currentColor\"/></svg></span>2 godz.</p><button class=\"ds-task-more\" aria-label=\"Akcje\"><svg aria-hidden=\"true\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"5\" cy=\"12\" r=\"1.1\" fill=\"currentColor\"/><circle cx=\"12\" cy=\"12\" r=\"1.1\" fill=\"currentColor\"/><circle cx=\"19\" cy=\"12\" r=\"1.1\" fill=\"currentColor\"/></svg></button></article>",
+      "css": ".ds-task { display: grid; grid-template-areas: 'check title title' 'handle meta actions'; grid-template-columns: 1.125rem minmax(0,1fr) auto; gap: 0.15rem 0.4rem; align-items: center; width: 14rem; padding: 0.55rem 0.3rem 0.35rem; border-radius: var(--radius-control); color: var(--color-text); background: var(--color-page); } .ds-task:hover, .ds-task:focus-within { background: var(--color-board); } .ds-task-check { grid-area: check; align-self: start; display: grid; place-items: center; height: 1.375rem; position: relative; } .ds-task-check input { position: absolute; opacity: 0; width: 1px; height: 1px; } .ds-task-check span { width: 1rem; height: 1rem; border: 1.5px solid var(--color-text-faint); border-radius: var(--radius-control); background: var(--color-surface); } .ds-task-check input:focus-visible + span { outline: 2px solid var(--color-focus); outline-offset: 2px; } .ds-task-check input:checked + span { background: var(--color-text-faint); } .ds-task-title { grid-area: title; margin: 0; font-family: var(--font-sans); font-size: 0.9375rem; font-weight: 450; line-height: 1.375rem; letter-spacing: 0; } .ds-task-handle { grid-area: handle; display: grid; grid-template-columns: repeat(2,3px); grid-auto-rows: 3px; gap: 2px; justify-self: center; padding: 0.35rem 0.2rem; color: var(--color-text-faint); } .ds-task-handle i { border-radius: 50%; background: currentColor; } .ds-task-meta { grid-area: meta; margin: 0; color: var(--color-text-muted); font-family: var(--font-mono); font-size: 0.75rem; font-variant-numeric: tabular-nums; line-height: 1.125rem; } .ds-task-prio { display: inline-flex; margin-right: 0.35rem; color: var(--color-text); vertical-align: -1px; } .ds-task-more { grid-area: actions; display: inline-grid; place-items: center; width: 1.5rem; height: 1.5rem; padding: 0; border: 1px solid transparent; border-radius: var(--radius-control); color: var(--color-text-faint); background: transparent; cursor: pointer; } .ds-task-more:hover { border-color: var(--color-border); color: var(--color-text); background: var(--color-surface); } .ds-task-more:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }"
+    },
+    {
+      "name": "Stopka dnia",
+      "kind": "custom",
+      "refersTo": "day-footer",
+      "description": "Rozkład jazdy dnia: mono Zaplanowano / Pozostało z linią postępu 2 px.",
+      "html": "<footer class=\"ds-day-footer\" style=\"--done: 40%\"><span>Zaplanowano:\n2 godz. 30 min</span><span>Pozostało:\n1 godz. 30 min</span><span class=\"ds-day-progress\" aria-hidden=\"true\"></span></footer>",
+      "css": ".ds-day-footer { position: relative; display: grid; gap: 0.35rem; width: 10rem; padding: 0.65rem 0.75rem 0.8rem; border-top: 1px solid var(--color-border); color: var(--color-text-muted); font-family: var(--font-mono); font-size: 0.75rem; font-variant-numeric: tabular-nums; line-height: 1.5; } .ds-day-footer > span:not(.ds-day-progress) { white-space: pre-line; } .ds-day-footer > span:not(.ds-day-progress)::first-line { color: var(--color-text-faint); } .ds-day-progress { position: absolute; top: -1px; left: 0; width: var(--done); height: 2px; background: var(--color-accent-fill); }"
+    },
+    {
+      "name": "Pusty dzień / strefa upuszczania",
+      "kind": "custom",
+      "description": "Pusty dzień z przerywanym obrysem; podczas przeciągania bursztynowa mgiełka z pierścieniem 1 px.",
+      "html": "<div class=\"ds-drop\"><div class=\"ds-drop-empty\">Upuść zadanie</div></div><div class=\"ds-drop\" data-drop-target><div class=\"ds-drop-empty\">Upuść zadanie</div></div>",
+      "css": ".ds-drop { display: flex; width: 9rem; padding: 0.25rem; margin-bottom: 0.5rem; border-radius: var(--radius-panel); } .ds-drop-empty { display: grid; width: 100%; min-height: 4.5rem; place-content: center; padding: 0.75rem; border: 1px dashed var(--color-border); border-radius: var(--radius-panel); color: var(--color-text-faint); font-family: var(--font-sans); font-size: 0.8125rem; line-height: 1.5; text-align: center; } .ds-drop[data-drop-target] { background: var(--color-accent-soft); box-shadow: inset 0 0 0 1px var(--color-accent-fill); } .ds-drop[data-drop-target] .ds-drop-empty { border-color: transparent; color: var(--color-accent); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Notatnik Skillweb",
+    "overview": "**Creative North Star: \"Notatnik Skillweb\"**\n\nEkran to rozkład tygodnia zapisany w notatniku, a nie tablica kafelków. Świat jest przypięty do marki Skillweb: białe (w ciemnym motywie grafitowe) tło, skala slate i jedna amber. Strukturę budują linie 1 px i typografia, nie wypełnienia, cienie ani kolor kolumn. Siedem dni to równe kolumny rozdzielone pionowymi liniami; zadania są wierszami, nie kartami; każdy dzień kończy stopka jak w rozkładzie jazdy — mono z linią postępu.\n\nGęstość jest robocza (tryb Operate): tekst zadań 14–15 px, metadane mono 12 px, kontrolki 2.5 rem. Amber pojawia się tylko tam, gdzie coś jest do zrobienia albo coś się dzieje: akcja główna, fokus, cel upuszczenia, postęp dnia i znak ◆. Wszystko inne jest slate. Oba motywy (jasny i ciemny) są równorzędne i przełączane przez `data-theme` na `:root`.\n\nOdrzucony punkt wyjścia to domyślny kanban: kolorowe kolumny dni, zaokrąglone karty z cieniem, pigułki-liczniki i rzędy ikon na każdej karcie.",
+    "keyCharacteristics": [
+      "Slate + jedna amber; kolor niesie stan, nie dekorację.",
+      "Linie 1 px zamiast paneli; zero cieni elewacji i rozmyć.",
+      "Promienie 3 px dla kontrolek i 5 px dla paneli — nic bardziej okrągłego.",
+      "Trzy kroje o rozdzielonych rolach: Space Grotesk dla nagłówków, Inter dla treści, JetBrains Mono dla liczb i czasu.",
+      "Zadanie jako wiersz: pole wyboru, tytuł, czas mono, menu „…”."
+    ],
+    "rules": [
+      {
+        "name": "The One Amber Rule",
+        "body": "Jest jeden odcień akcentu: `accent-fill` do wypełnień i linii, `accent` do tekstu i fokusu; w ciemnym motywie oba zbiegają się w jedną wartość. Żadnego drugiego koloru marki, żadnych barw per dzień ani per priorytet.",
+        "section": "colors"
+      },
+      {
+        "name": "The Amber Means Action Rule",
+        "body": "Amber oznacza akcję główną, fokus, upuszczanie albo postęp. Jeśli element niczego z tych rzeczy nie robi, jest slate.",
+        "section": "colors"
+      },
+      {
+        "name": "The Three Lines Rule",
+        "body": "Podziały i spoczynkowe obrysy mają grubość 1 px i trzy kolory: `border` dla struktury, `border-soft` między wierszami, `border-strong` dla obrysów kontrolek w spoczynku. Wyjątki są stanowe lub funkcjonalne: obrys przycisku głównego w kolorze jego wypełnienia, `text-faint` na hover neutralnego przycisku, `danger` przy błędzie, 1.5 px obrysu pola wyboru i 2 px linii postępu.",
+        "section": "colors"
+      },
+      {
+        "name": "The Three Voices Rule",
+        "body": "Każdy krój ma jedną rolę: Space Grotesk nazywa, Inter opowiada, JetBrains Mono liczy. Liczba czasu lub ilości zawsze w mono z `font-variant-numeric: tabular-nums`.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Heavy Type Rule",
+        "body": "Najcięższa waga to 600, wyłącznie dla nagłówków i przycisków. Tekst zadań nie przekracza 450; nic nie schodzi poniżej 0.75rem.",
+        "section": "typography"
+      },
+      {
+        "name": "The Hairline Not Shadow Rule",
+        "body": "Żadnych cieni elewacji ani rozmyć (`backdrop-filter`). Dozwolony jest tylko pierścień `inset 0 0 0 1px` zastępujący obrys, gdy obrys zmieniałby wymiary.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** buduj podziały i spoczynkowe obrysy liniami 1 px w trzech kolorach: `border`, `border-soft`, `border-strong`; inne kolory obrysu tylko dla stanu (hover, błąd, akcja główna).",
+      "**Do** rezerwuj amber dla akcji głównej, fokusu, upuszczania, postępu i znaku ◆; tekst na wypełnieniu amber zawsze w `on-accent`.",
+      "**Do** zapisuj każdą liczbę czasu i ilości w JetBrains Mono z cyframi tabelarycznymi.",
+      "**Do** używaj wyłącznie promieni `control` (3px) i `panel` (5px).",
+      "**Do** rysuj ikony jako inline SVG na siatce 24, obrys 1.8, `currentColor`, rozmiar 18–20px; znaczniki priorytetu jako trójkąty 10px.",
+      "**Do** dawaj każdej interaktywnej kontrolce kontur fokusu 2 px w `focus` z odsunięciem 2 px; kontrolki wiersza zadania i pozycje menu rosną do 2.75rem przy `pointer: coarse`.",
+      "**Do** definiuj każdy kolor jako zmienną `--color-*` z wartością dla obu motywów."
+    ],
+    "donts": [
+      "**Don't** dodawaj cieni elewacji ani rozmyć; jedyny dopuszczalny `box-shadow` to pierścień `inset 0 0 0 1px` zamiast obrysu.",
+      "**Don't** barw kolumn dni, pustych stanów ani priorytetów osobnymi kolorami.",
+      "**Don't** zamieniaj wierszy zadań w zaokrąglone karty z tłem i obrysem w spoczynku.",
+      "**Don't** układaj rzędów przycisków-ikon na wierszu zadania; akcje zadania mieszkają w menu „…”.",
+      "**Don't** używaj znaków Unicode jako ikon akcji; ◆ jest jedynym znakiem typograficznym w interfejsie i pozostaje znakiem marki, nie ikoną.",
+      "**Don't** używaj pigułek ani plakietek jako liczników; licznik to sama cyfra mono w `text-muted`.",
+      "**Don't** przekraczaj wagi 600 ani nie schodź z tekstem poniżej 0.75rem."
+    ]
+  }
+}

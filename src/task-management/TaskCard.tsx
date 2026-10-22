@@ -1,9 +1,13 @@
+import { Fragment } from 'react';
+
 import { formatDuration, type StoredTask } from '../domain/model';
+import { PriorityHighIcon, PriorityLowIcon } from './icons';
+import { TaskActionsMenu } from './TaskActionsMenu';
 import styles from './TaskCard.module.css';
 
 interface TaskCardProps {
-  compact?: boolean;
   dragHandleRef?: (element: HTMLDivElement | null) => void;
+  headingLevel: 3 | 4;
   task: StoredTask;
   onEdit: (taskId: string, trigger: HTMLButtonElement) => void;
   onMove: (taskId: string, trigger: HTMLButtonElement) => void;
@@ -12,14 +16,37 @@ interface TaskCardProps {
 }
 
 const priorityLabels: Record<StoredTask['priority'], string> = {
-  low: 'Niski',
-  medium: 'Średni',
-  high: 'Wysoki',
+  low: 'Niski priorytet',
+  medium: 'Średni priorytet',
+  high: 'Wysoki priorytet',
 };
 
+// W wąskiej kolumnie dnia czas może się złamać tylko między godzinami a minutami;
+// liczba zostaje przy jednostce, a znacznik priorytetu przy pierwszej części.
+function splitDuration(duration: string) {
+  return duration.split(/ (?=\d)/).map((part) => part.replace(' ', '\u00a0'));
+}
+
+function PriorityMark({ priority }: { priority: StoredTask['priority'] }) {
+  const label = priorityLabels[priority];
+
+  // Średni priorytet jest domyślny, więc nie dokładamy mu znacznika na każdej
+  // karcie; czytniki ekranu nadal dostają pełną informację.
+  if (priority === 'medium') {
+    return <span className={styles.visuallyHidden}>{label}</span>;
+  }
+
+  return (
+    <span className={styles.priority} data-priority={priority} title={label}>
+      {priority === 'high' ? <PriorityHighIcon /> : <PriorityLowIcon />}
+      <span className={styles.visuallyHidden}>{label}</span>
+    </span>
+  );
+}
+
 export function TaskCard({
-  compact = false,
   dragHandleRef,
+  headingLevel,
   task,
   onEdit,
   onMove,
@@ -30,15 +57,32 @@ export function TaskCard({
   const statusAction = isCompleted
     ? 'Oznacz jako niewykonane'
     : 'Oznacz jako wykonane';
+  const Title = headingLevel === 3 ? 'h3' : 'h4';
 
   return (
     <article
       className={styles.card}
-      data-layout={compact ? 'compact' : 'wide'}
       data-priority={task.priority}
       data-status={task.status}
       aria-label={`Zadanie: ${task.title}`}
     >
+      <label className={styles.completionControl}>
+        <input
+          type="checkbox"
+          checked={isCompleted}
+          aria-label={`${statusAction}: ${task.title}`}
+          onChange={() => {
+            onStatusChange(task);
+          }}
+        />
+        <span aria-hidden="true" className={styles.checkboxVisual} />
+      </label>
+
+      <Title className={styles.title}>{task.title}</Title>
+      <span className={styles.status}>
+        {isCompleted ? 'Wykonane' : 'Do zrobienia'}
+      </span>
+
       <div
         ref={dragHandleRef}
         className={styles.dragHandle}
@@ -56,77 +100,37 @@ export function TaskCard({
         <span aria-hidden="true" />
       </div>
 
-      <div className={styles.content}>
-        <div className={styles.headingRow}>
-          <h3 className={styles.title}>{task.title}</h3>
-          <span className={styles.status}>
-            {isCompleted ? 'Wykonane' : 'Do zrobienia'}
-          </span>
-        </div>
+      <p className={styles.meta}>
+        {splitDuration(formatDuration(task.durationMinutes)).map(
+          (part, index) =>
+            index === 0 ? (
+              <span key={part} className={styles.durationPart}>
+                <PriorityMark priority={task.priority} />
+                {part}
+              </span>
+            ) : (
+              <Fragment key={part}>
+                {' '}
+                <span className={styles.durationPart}>{part}</span>
+              </Fragment>
+            ),
+        )}
+      </p>
 
-        <div className={styles.meta}>
-          <span className={styles.priority}>
-            <span className={styles.priorityMark} aria-hidden="true" />
-            {priorityLabels[task.priority]} priorytet
-          </span>
-          <span className={styles.duration}>
-            <span aria-hidden="true">◷</span>
-            {formatDuration(task.durationMinutes)}
-          </span>
-        </div>
-
-        <div className={styles.footer}>
-          <label className={styles.completionControl}>
-            <input
-              type="checkbox"
-              checked={isCompleted}
-              aria-label={`${statusAction}: ${task.title}`}
-              onChange={() => {
-                onStatusChange(task);
-              }}
-            />
-            <span aria-hidden="true" className={styles.checkboxVisual} />
-            <span>{statusAction}</span>
-          </label>
-
-          <div className={styles.actions}>
-            <button
-              id={`move-button-${task.id}`}
-              type="button"
-              className={styles.moveButton}
-              aria-label={`Przenieś do…: ${task.title}`}
-              aria-describedby="move-task-instructions"
-              onClick={(event) => {
-                onMove(task.id, event.currentTarget);
-              }}
-            >
-              <span aria-hidden="true">↪</span>
-              <span>Przenieś do…</span>
-            </button>
-            <button
-              type="button"
-              className={styles.editButton}
-              aria-label={`Edytuj: ${task.title}`}
-              onClick={(event) => {
-                onEdit(task.id, event.currentTarget);
-              }}
-            >
-              <span aria-hidden="true">✎</span>
-              <span>Edytuj</span>
-            </button>
-            <button
-              type="button"
-              className={styles.deleteButton}
-              aria-label={`Usuń: ${task.title}`}
-              onClick={() => {
-                onDelete(task);
-              }}
-            >
-              <span aria-hidden="true">×</span>
-              <span>Usuń</span>
-            </button>
-          </div>
-        </div>
+      <div className={styles.actions}>
+        <TaskActionsMenu
+          taskId={task.id}
+          taskTitle={task.title}
+          onMove={(trigger) => {
+            onMove(task.id, trigger);
+          }}
+          onEdit={(trigger) => {
+            onEdit(task.id, trigger);
+          }}
+          onDelete={() => {
+            onDelete(task);
+          }}
+        />
       </div>
     </article>
   );
