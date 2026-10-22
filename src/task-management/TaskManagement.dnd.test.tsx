@@ -185,10 +185,10 @@ describe('TaskManagement drag lifecycle', () => {
     ).not.toBeInTheDocument();
     expect(
       screen.getByRole('button', {
-        name: 'Przenieś do…: Przygotować prezentację',
+        name: 'Akcje: Przygotować prezentację',
       }),
     ).toHaveAccessibleDescription(
-      'Aby przenieść zadanie lub zmienić jego kolejność klawiaturą, wybierz przycisk „Przenieś do…”, a następnie miejsce docelowe i pozycję.',
+      'Aby przenieść zadanie lub zmienić jego kolejność klawiaturą, otwórz menu akcji zadania, wybierz „Przenieś do…”, a następnie miejsce docelowe i pozycję.',
     );
   });
 
@@ -198,6 +198,11 @@ describe('TaskManagement drag lifecycle', () => {
 
     await user.click(
       screen.getByRole('button', {
+        name: 'Akcje: Przygotować prezentację',
+      }),
+    );
+    await user.click(
+      screen.getByRole('menuitem', {
         name: 'Przenieś do…: Przygotować prezentację',
       }),
     );

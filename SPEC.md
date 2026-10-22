@@ -63,19 +63,19 @@ Zwykła lista zadań pokazuje, co należy zrobić, ale nie pomaga zdecydować, k
 
 ### Główny widok
 
-Interfejs ma jeden ekran ułożony warstwowo:
+Interfejs ma jeden ekran:
 
-- u góry znajduje się rozwijany formularz dodawania;
-- pod nim znajduje się pełnoszeroka lista „Do zaplanowania”;
-- niżej znajduje się pełnoszeroka plansza siedmiu kolumn: poniedziałek, wtorek, środa, czwartek, piątek, sobota i niedziela.
+- w nagłówku znajdują się tytuł, przycisk rozwijający formularz dodawania i przełącznik motywu;
+- lewa kolumna zawiera rozwijany formularz dodawania, a pod nim listę „Do zaplanowania”;
+- obok znajduje się plansza siedmiu kolumn: poniedziałek, wtorek, środa, czwartek, piątek, sobota i niedziela.
 
 Kolumny nie reprezentują konkretnych dat. Aplikacja nie zna aktualnego tygodnia i nie wykonuje żadnych operacji automatycznie wraz z upływem czasu.
 
-Interfejs jest projektowany przede wszystkim dla ekranu komputera. Na dużym ekranie powinien pokazywać wszystkie siedem dni jednocześnie. Jeżeli kolumny nie mieszczą się w czytelnej szerokości, obszar tygodnia może przewijać się poziomo.
+Interfejs jest projektowany przede wszystkim dla ekranu komputera. Na dużym ekranie powinien pokazywać listę i wszystkie siedem dni jednocześnie. Jeżeli kolumny nie mieszczą się w czytelnej szerokości, obszar tygodnia może przewijać się poziomo. Na wąskim ekranie lista i dni układają się jedno pod drugim.
 
 ### Wygląd i motyw
 
-Kolorystyka i typografia są zgodne z serwisem [Skillweb](https://www.skillweb.pl/): paleta slate z akcentem bursztynowym, krój Inter dla tekstu, Space Grotesk dla nagłówków i JetBrains Mono dla etykiet.
+Kolorystyka i typografia są zgodne z serwisem [Skillweb](https://www.skillweb.pl/): paleta slate z jednym akcentem bursztynowym, krój Inter dla tekstu, Space Grotesk dla nagłówków i JetBrains Mono dla czasu i liczników. Dni tygodnia nie mają własnych kolorów; akcent oznacza główną akcję, fokus i miejsce upuszczenia.
 
 W nagłówku znajduje się przełącznik motywu z trzema opcjami:
 
@@ -93,9 +93,9 @@ Każda karta pokazuje co najmniej:
 - priorytet;
 - szacowany czas;
 - kontrolkę oznaczenia wykonania;
-- dostęp do edycji i usunięcia.
+- menu akcji z opcjami „Przenieś do…”, „Edytuj” i „Usuń”.
 
-Priorytet powinien być czytelny także bez polegania wyłącznie na kolorze, np. przez tekst albo ikonę.
+Priorytet powinien być czytelny także bez polegania wyłącznie na kolorze, np. przez tekst albo ikonę. Wysoki priorytet oznacza znacznik ▲, a niski ▽; średni jest domyślny i nie ma znacznika wizualnego. Technologie asystujące otrzymują pełną nazwę priorytetu dla każdej karty.
 
 Wykonane zadanie pozostaje w aktualnym miejscu i jest wizualnie przekreślone lub przygaszone. Można je ponownie oznaczyć jako niewykonane, edytować, przenieść albo usunąć.
 

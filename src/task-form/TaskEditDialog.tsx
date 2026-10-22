@@ -56,7 +56,6 @@ export function TaskEditDialog({
       {task ? (
         <div className={styles.content}>
           <div className={styles.heading}>
-            <p className={styles.eyebrow}>Edycja zadania</p>
             <h2 id={headingId}>Popraw szczegóły</h2>
           </div>
           <TaskForm

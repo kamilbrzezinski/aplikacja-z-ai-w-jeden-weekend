@@ -198,7 +198,6 @@ export function TaskMoveDialog({
       {task ? (
         <div className={styles.content}>
           <div className={styles.heading}>
-            <p className={styles.eyebrow}>Dostępne przenoszenie</p>
             <h2 id={headingId}>Przenieś do…</h2>
           </div>
           <MoveTaskForm

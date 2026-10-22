@@ -23,6 +23,7 @@ import { TaskEditDialog } from '../task-form/TaskEditDialog';
 import { TaskForm, type TaskFormValues } from '../task-form/TaskForm';
 import { ThemeMenu } from '../theme/ThemeMenu';
 import { TaskColumn } from './TaskColumn';
+import { CloseIcon, PlusIcon } from './icons';
 import { TaskMoveDialog } from './TaskMoveDialog';
 import { cloneTaskColumns, createMoveTaskAction } from './dnd';
 
@@ -177,6 +178,16 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
     });
   };
 
+  const openEditDialog = (taskId: string, trigger: HTMLButtonElement) => {
+    editTriggerRef.current = trigger;
+    setEditedTaskId(taskId);
+  };
+
+  const openMoveDialog = (taskId: string, trigger: HTMLButtonElement) => {
+    moveTriggerRef.current = trigger;
+    setMovedTaskId(taskId);
+  };
+
   const closeMoveDialog = () => {
     const taskId = movedTaskId;
 
@@ -185,7 +196,7 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
     if (taskId) {
       window.requestAnimationFrame(() => {
         window.requestAnimationFrame(() => {
-          document.getElementById(`move-button-${taskId}`)?.focus();
+          document.getElementById(`task-actions-${taskId}`)?.focus();
         });
       });
     }
@@ -213,13 +224,12 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
   return (
     <main className={styles.shell}>
       <header className={styles.appHeader}>
-        <div>
-          <p className={styles.eyebrow}>Organizer tygodnia</p>
-          <h1>Mój tydzień</h1>
-          <p className={styles.lead}>
-            Zbierz zadania i rozłóż je na spokojny, wykonalny plan.
-          </p>
-        </div>
+        <h1>
+          <span className={styles.brandMark} aria-hidden="true">
+            ◆
+          </span>
+          Mój tydzień
+        </h1>
         <div className={styles.headerActions}>
           <button
             ref={addTaskTriggerRef}
@@ -231,38 +241,17 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
               setIsAddFormOpen((isOpen) => !isOpen);
             }}
           >
-            <span aria-hidden="true">{isAddFormOpen ? '−' : '+'}</span>
+            {isAddFormOpen ? <CloseIcon /> : <PlusIcon />}
             {isAddFormOpen ? 'Zwiń formularz' : 'Dodaj zadanie'}
           </button>
           <ThemeMenu />
         </div>
       </header>
 
-      {isAddFormOpen ? (
-        <section
-          id="add-task-panel"
-          className={styles.addPanel}
-          aria-labelledby="add-task-heading"
-        >
-          <div className={styles.addPanelHeading}>
-            <h2 id="add-task-heading">Dodaj zadanie</h2>
-            <p>
-              Uzupełnij szczegóły. Po dodaniu możesz od razu wpisać kolejne.
-            </p>
-          </div>
-          <TaskForm
-            submitLabel="Dodaj zadanie"
-            resetAfterSubmit
-            titleAutoFocus
-            onCancel={closeAddForm}
-            onSubmit={addTask}
-          />
-        </section>
-      ) : null}
-
       <p id="move-task-instructions" className={styles.visuallyHidden}>
-        Aby przenieść zadanie lub zmienić jego kolejność klawiaturą, wybierz
-        przycisk „Przenieś do…”, a następnie miejsce docelowe i pozycję.
+        Aby przenieść zadanie lub zmienić jego kolejność klawiaturą, otwórz menu
+        akcji zadania, wybierz „Przenieś do…”, a następnie miejsce docelowe i
+        pozycję.
       </p>
 
       <DragDropProvider
@@ -271,62 +260,69 @@ export function TaskManagement({ state, dispatch }: TaskManagementProps) {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <TaskColumn
-          location="backlog"
-          title="Do zaplanowania"
-          tasks={tasksIn('backlog')}
-          emptyMessage="Tu pojawią się zadania, które czekają na zaplanowanie."
-          emptyActionLabel="Dodaj pierwsze zadanie"
-          onEmptyAction={openAddForm}
-          onEdit={(taskId, trigger) => {
-            editTriggerRef.current = trigger;
-            setEditedTaskId(taskId);
-          }}
-          onMove={(taskId, trigger) => {
-            moveTriggerRef.current = trigger;
-            setMovedTaskId(taskId);
-          }}
-          onStatusChange={changeTaskStatus}
-          onDelete={deleteTask}
-        />
-
-        <section className={styles.week} aria-labelledby="week-heading">
-          <div className={styles.weekHeading}>
-            <div>
-              <h2 id="week-heading">Plan tygodnia</h2>
-            </div>
-            <p>Na mniejszych ekranach przewiń planszę poziomo.</p>
-          </div>
-
-          <div
-            className={styles.weekScroller}
-            tabIndex={0}
-            aria-label="Kolumny dni tygodnia"
-          >
-            <div className={styles.weekColumns}>
-              {dayLocations.map((day) => (
-                <TaskColumn
-                  key={day}
-                  location={day}
-                  title={dayNames[day]}
-                  tasks={tasksIn(day)}
-                  summary={selectDaySummary(state, day)}
-                  emptyMessage="Upuść zadanie"
-                  onEdit={(taskId, trigger) => {
-                    editTriggerRef.current = trigger;
-                    setEditedTaskId(taskId);
-                  }}
-                  onMove={(taskId, trigger) => {
-                    moveTriggerRef.current = trigger;
-                    setMovedTaskId(taskId);
-                  }}
-                  onStatusChange={changeTaskStatus}
-                  onDelete={deleteTask}
+        <div className={styles.workspace}>
+          <div className={styles.planning}>
+            {isAddFormOpen ? (
+              <section
+                id="add-task-panel"
+                className={styles.addPanel}
+                aria-labelledby="add-task-heading"
+              >
+                <h2 id="add-task-heading">Dodaj zadanie</h2>
+                <TaskForm
+                  layout="stacked"
+                  submitLabel="Dodaj zadanie"
+                  resetAfterSubmit
+                  titleAutoFocus
+                  onCancel={closeAddForm}
+                  onSubmit={addTask}
                 />
-              ))}
-            </div>
+              </section>
+            ) : null}
+
+            <TaskColumn
+              location="backlog"
+              title="Do zaplanowania"
+              tasks={tasksIn('backlog')}
+              emptyMessage="Tu pojawią się zadania, które czekają na zaplanowanie."
+              emptyActionLabel="Dodaj pierwsze zadanie"
+              onEmptyAction={openAddForm}
+              onEdit={openEditDialog}
+              onMove={openMoveDialog}
+              onStatusChange={changeTaskStatus}
+              onDelete={deleteTask}
+            />
           </div>
-        </section>
+
+          <section className={styles.week} aria-labelledby="week-heading">
+            <h2 id="week-heading" className={styles.visuallyHidden}>
+              Plan tygodnia
+            </h2>
+
+            <div
+              className={styles.weekScroller}
+              tabIndex={0}
+              aria-label="Kolumny dni tygodnia"
+            >
+              <div className={styles.weekColumns}>
+                {dayLocations.map((day) => (
+                  <TaskColumn
+                    key={day}
+                    location={day}
+                    title={dayNames[day]}
+                    tasks={tasksIn(day)}
+                    summary={selectDaySummary(state, day)}
+                    emptyMessage="Upuść zadanie"
+                    onEdit={openEditDialog}
+                    onMove={openMoveDialog}
+                    onStatusChange={changeTaskStatus}
+                    onDelete={deleteTask}
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+        </div>
       </DragDropProvider>
 
       <TaskEditDialog

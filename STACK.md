@@ -61,6 +61,11 @@ wyboru kolumny i pozycji. DnD korzysta wyłącznie z sensora wskaźnika, a dialo
 jest oficjalną metodą przenoszenia i zmiany kolejności z klawiatury. Obie ścieżki
 zatwierdzają tę samą semantyczną akcję reducera.
 
+Od `Z15` akcje karty („Przenieś do…”, „Edytuj”, „Usuń”) są pozycjami menu
+otwieranego przyciskiem „…” (`TaskActionsMenu`). Menu jest renderowane w portalu
+z pozycją `fixed`, aby przewijana plansza tygodnia go nie przycinała. Dialogi
+przywracają fokus na przycisk „…”, który pozostaje w karcie po zamknięciu menu.
+
 ## 4. Formularze i style
 
 - Formularz zadania będzie zwykłym kontrolowanym formularzem React. Ze względu na małą liczbę pól nie będzie używana osobna biblioteka formularzy.
@@ -71,6 +76,10 @@ zatwierdzają tę samą semantyczną akcję reducera.
   `:root[data-theme='dark']`. Komponenty korzystają wyłącznie z tokenów
   semantycznych (np. `--color-accent` dla tekstu, `--color-accent-fill` i
   `--color-on-accent` dla wypełnionych przycisków).
+- Wygląd trzyma się zasad Skillweb: jeden akcent, linie 1 px zamiast cieni,
+  promienie 3 px (`--radius-control`) i 5 px (`--radius-panel`). Zadania są
+  wierszami rozdzielonymi linią `--color-border-soft`, a ikony to SVG w jednej
+  grubości kreski. Szczegóły systemu opisuje `DESIGN.md`.
 - Fonty Inter, Space Grotesk i JetBrains Mono są hostowane razem z aplikacją
   przez pakiety `@fontsource-variable/*`, dzięki czemu aplikacja nie wysyła
   zapytań do zewnętrznych serwerów fontów, a zestawy `latin-ext` obsługują

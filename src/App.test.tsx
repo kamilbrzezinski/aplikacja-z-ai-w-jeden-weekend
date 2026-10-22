@@ -41,6 +41,22 @@ function storeState(state: AppState) {
   window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
+async function chooseTaskAction(
+  user: ReturnType<typeof userEvent.setup>,
+  action: 'Przenieś do…' | 'Edytuj' | 'Usuń',
+  taskTitle: string,
+  scope: Pick<typeof screen, 'getByRole'> = screen,
+) {
+  const trigger = scope.getByRole('button', { name: `Akcje: ${taskTitle}` });
+
+  await user.click(trigger);
+  await user.click(
+    screen.getByRole('menuitem', { name: `${action}: ${taskTitle}` }),
+  );
+
+  return trigger;
+}
+
 async function openAddTaskForm(user: ReturnType<typeof userEvent.setup>) {
   const trigger = screen.getByRole('button', {
     name: 'Dodaj zadanie',
@@ -124,9 +140,7 @@ describe('App', () => {
     for (const day of dayLocations) {
       const column = screen.getByRole('region', { name: dayNames[day] });
 
-      expect(
-        within(column).getByText('Upuść zadanie'),
-      ).toBeInTheDocument();
+      expect(within(column).getByText('Upuść zadanie')).toBeInTheDocument();
       expect(
         within(column).getByText('Zaplanowano: 0 min'),
       ).toBeInTheDocument();
@@ -202,10 +216,11 @@ describe('App', () => {
     ).toBeInTheDocument();
     expect(within(monday).getByText('Pozostało: 0 min')).toBeInTheDocument();
 
-    await user.click(
-      within(monday).getByRole('button', {
-        name: 'Edytuj: Zaplanowane zadanie',
-      }),
+    await chooseTaskAction(
+      user,
+      'Edytuj',
+      'Zaplanowane zadanie',
+      within(monday),
     );
     const dialog = screen.getByRole('dialog', { name: 'Popraw szczegóły' });
     fireEvent.change(
@@ -246,10 +261,7 @@ describe('App', () => {
     expect(screen.getByText('2 godz.')).toBeInTheDocument();
     expect(screen.getByLabelText('Liczba zadań: 1')).toBeInTheDocument();
 
-    const editTrigger = screen.getByRole('button', {
-      name: 'Edytuj: Prezentacja',
-    });
-    await user.click(editTrigger);
+    await chooseTaskAction(user, 'Edytuj', 'Prezentacja');
 
     const dialog = screen.getByRole('dialog', { name: 'Popraw szczegóły' });
     const title = within(dialog).getByRole('textbox', { name: 'Nazwa' });
@@ -277,9 +289,7 @@ describe('App', () => {
     expect(screen.getByText('Niski priorytet')).toBeInTheDocument();
     expect(screen.getByText('45 min')).toBeInTheDocument();
     expect(
-      screen.getByRole('button', {
-        name: 'Edytuj: Prezentacja kwartalna',
-      }),
+      screen.getByRole('button', { name: 'Akcje: Prezentacja kwartalna' }),
     ).toHaveFocus();
   });
 
@@ -294,10 +304,7 @@ describe('App', () => {
     );
     await user.click(screen.getByRole('button', { name: 'Dodaj zadanie' }));
 
-    const editTrigger = screen.getByRole('button', {
-      name: 'Edytuj: Bez zmian',
-    });
-    await user.click(editTrigger);
+    const editTrigger = await chooseTaskAction(user, 'Edytuj', 'Bez zmian');
     const dialog = screen.getByRole('dialog', { name: 'Popraw szczegóły' });
     const title = within(dialog).getByRole('textbox', { name: 'Nazwa' });
 
@@ -322,10 +329,7 @@ describe('App', () => {
     );
     await user.click(screen.getByRole('button', { name: 'Dodaj zadanie' }));
 
-    const editTrigger = screen.getByRole('button', {
-      name: 'Edytuj: Zamknij Esc',
-    });
-    await user.click(editTrigger);
+    const editTrigger = await chooseTaskAction(user, 'Edytuj', 'Zamknij Esc');
     const dialog = screen.getByRole('dialog', { name: 'Popraw szczegóły' });
     const title = within(dialog).getByRole('textbox', { name: 'Nazwa' });
 
@@ -398,18 +402,19 @@ describe('App', () => {
     );
     await user.click(screen.getByRole('button', { name: 'Dodaj zadanie' }));
 
-    const deleteButton = screen.getByRole('button', {
-      name: 'Usuń: Decyzja o usunięciu',
-    });
-
-    await user.click(deleteButton);
+    const actionsTrigger = await chooseTaskAction(
+      user,
+      'Usuń',
+      'Decyzja o usunięciu',
+    );
 
     expect(confirm).toHaveBeenLastCalledWith(
       'Usunąć zadanie „Decyzja o usunięciu”? Tej operacji nie można cofnąć.',
     );
     expect(screen.getByText('Decyzja o usunięciu')).toBeInTheDocument();
+    expect(actionsTrigger).toHaveFocus();
 
-    await user.click(deleteButton);
+    await chooseTaskAction(user, 'Usuń', 'Decyzja o usunięciu');
 
     expect(screen.queryByText('Decyzja o usunięciu')).not.toBeInTheDocument();
     expect(screen.getByLabelText('Liczba zadań: 0')).toBeInTheDocument();
@@ -432,9 +437,7 @@ describe('App', () => {
 
     render(<App />);
 
-    await user.click(
-      screen.getByRole('button', { name: 'Przenieś do…: Trzecie' }),
-    );
+    await chooseTaskAction(user, 'Przenieś do…', 'Trzecie');
 
     let dialog = screen.getByRole('dialog', { name: 'Przenieś do…' });
 
@@ -444,12 +447,10 @@ describe('App', () => {
       screen.queryByRole('dialog', { name: 'Przenieś do…' }),
     ).not.toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Przenieś do…: Trzecie' }),
+      screen.getByRole('button', { name: 'Akcje: Trzecie' }),
     ).toHaveFocus();
 
-    await user.click(
-      screen.getByRole('button', { name: 'Przenieś do…: Trzecie' }),
-    );
+    await chooseTaskAction(user, 'Przenieś do…', 'Trzecie');
     dialog = screen.getByRole('dialog', { name: 'Przenieś do…' });
 
     expect(
@@ -471,13 +472,11 @@ describe('App', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole('button', { name: 'Przenieś do…: Trzecie' }),
+        screen.getByRole('button', { name: 'Akcje: Trzecie' }),
       ).toHaveFocus();
     });
 
-    await user.click(
-      screen.getByRole('button', { name: 'Przenieś do…: Trzecie' }),
-    );
+    await chooseTaskAction(user, 'Przenieś do…', 'Trzecie');
     dialog = screen.getByRole('dialog', { name: 'Przenieś do…' });
     await user.selectOptions(
       within(dialog).getByRole('combobox', { name: 'Miejsce docelowe' }),
@@ -495,9 +494,7 @@ describe('App', () => {
     expect(within(sunday).getByText('Zaplanowano: 30 min')).toBeInTheDocument();
     await waitFor(() => {
       expect(
-        within(sunday).getByRole('button', {
-          name: 'Przenieś do…: Trzecie',
-        }),
+        within(sunday).getByRole('button', { name: 'Akcje: Trzecie' }),
       ).toHaveFocus();
     });
   });
@@ -556,7 +553,7 @@ describe('App', () => {
     ).toBeInTheDocument();
   });
 
-  it('keeps a long title and all card actions usable in the compact layout', async () => {
+  it('keeps a long title and all card actions usable in a narrow column', async () => {
     const user = userEvent.setup();
     render(<App />);
     await openAddTaskForm(user);
@@ -573,14 +570,22 @@ describe('App', () => {
     ).toBeInTheDocument();
     expect(screen.getByText(longTitle)).toBeInTheDocument();
     expect(screen.queryAllByRole('radio')).toHaveLength(0);
+    await user.click(
+      screen.getByRole('button', { name: `Akcje: ${longTitle}` }),
+    );
+
+    const menu = screen.getByRole('menu', { name: `Akcje: ${longTitle}` });
+
     expect(
-      screen.getByRole('button', { name: `Edytuj: ${longTitle}` }),
+      within(menu).getByRole('menuitem', { name: `Edytuj: ${longTitle}` }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: `Przenieś do…: ${longTitle}` }),
+      within(menu).getByRole('menuitem', {
+        name: `Przenieś do…: ${longTitle}`,
+      }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: `Usuń: ${longTitle}` }),
+      within(menu).getByRole('menuitem', { name: `Usuń: ${longTitle}` }),
     ).toBeInTheDocument();
   });
 });

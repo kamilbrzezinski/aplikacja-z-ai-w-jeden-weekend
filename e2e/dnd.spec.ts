@@ -31,11 +31,13 @@ async function moveWithDialogToThursday(
   title: string,
   position?: 'first',
 ) {
-  const trigger = page.getByRole('button', {
-    name: `Przenieś do…: ${title}`,
-  });
+  const trigger = page.getByRole('button', { name: `Akcje: ${title}` });
 
   await trigger.focus();
+  await page.keyboard.press('Enter');
+  await expect(
+    page.getByRole('menuitem', { name: `Przenieś do…: ${title}` }),
+  ).toBeFocused();
   await page.keyboard.press('Enter');
 
   const dialog = page.getByRole('dialog', { name: 'Przenieś do…' });
@@ -59,7 +61,7 @@ async function moveWithDialogToThursday(
   await page.keyboard.press('Tab');
   await page.keyboard.press('Enter');
   await expect(
-    page.getByRole('button', { name: `Przenieś do…: ${title}` }),
+    page.getByRole('button', { name: `Akcje: ${title}` }),
   ).toBeFocused();
 }
 
@@ -150,15 +152,14 @@ test('cancels the move dialog with Escape without saving and restores focus', as
 
   await addTask(page, title, 30);
 
-  const trigger = page.getByRole('button', {
-    name: `Przenieś do…: ${title}`,
-  });
+  const trigger = page.getByRole('button', { name: `Akcje: ${title}` });
   const stateBeforeDialog = await page.evaluate(
     (storageKey) => window.localStorage.getItem(storageKey),
     STORAGE_KEY,
   );
 
   await trigger.focus();
+  await page.keyboard.press('Enter');
   await page.keyboard.press('Enter');
 
   const dialog = page.getByRole('dialog', { name: 'Przenieś do…' });
