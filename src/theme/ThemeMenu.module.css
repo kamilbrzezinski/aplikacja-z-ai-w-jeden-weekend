@@ -80,7 +80,7 @@
 }
 
 .itemDescription {
-  color: var(--color-text-faint);
+  color: var(--color-text-muted);
   font-size: 0.75rem;
   font-weight: 400;
 }

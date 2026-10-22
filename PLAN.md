@@ -143,8 +143,9 @@ testy.
   znajdzie konsumenta;
 - usunąć martwe, nadpisywane reguły `.footer` w media query;
 - zdecydować, czy `selectTasksByLocation` zostaje wykorzystany w PD6, czy usunięty;
-- usunąć deklarację `Inter` albo jawnie udokumentować systemowy fallback; nie
-  dodawać zewnętrznego fontu tylko dla zgodności z nazwą.
+- ~~usunąć deklarację `Inter` albo jawnie udokumentować systemowy fallback~~ —
+  nieaktualne po Z14 (#24): Inter jest hostowany lokalnie razem z typografią
+  Skillweb.
 
 **Kryteria akceptacji:** brak zmiany zachowania i wyglądu aplikacji, mniejsza
 liczba testów dotyczących nieużywanego prototypu oraz brak osieroconych eksportów.
