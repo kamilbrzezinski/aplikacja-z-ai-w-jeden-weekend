@@ -20,7 +20,7 @@
 - Formatuj czas jako `0 min`, same minuty, pełne godziny albo połączenie, np. `30 min`, `2 godz.` i `1 godz. 30 min`.
 - Czas zadania wprowadzaj przez pole liczbowe bez sztucznego maksimum, z `min="15"` i `step="15"`. Niezależnie waliduj wartości puste, ujemne, ułamkowe i niepodzielne przez 15.
 - Formularz dodawania umieszczaj nad backlogiem, a edycję realizuj za pomocą natywnego elementu `<dialog>` z prawidłowym zamykaniem klawiszem `Esc` i przywracaniem fokusu.
-- Używaj klucza `organizer-tygodnia:v1` dla danych w `localStorage`. Brak synchronizacji i rozwiązywania konfliktów między jednocześnie otwartymi kartami pozostaje poza zakresem MVP.
+- Używaj klucza `organizer-tygodnia:v1` dla danych w `localStorage`, a `organizer-tygodnia:theme` wyłącznie dla preferencji motywu (`system`, `light`, `dark`), trzymanej poza `AppState`. Brak synchronizacji i rozwiązywania konfliktów między jednocześnie otwartymi kartami pozostaje poza zakresem MVP.
 - `createdAt` pozostaje niezmienne. `updatedAt` aktualizuj przy edycji danych, zmianie statusu, przeniesieniu i zmianie kolejności; znacznik czasu przekazuj w akcji, aby reducer pozostał deterministyczny.
 - Identyfikatory i znaczniki czasu generuj poza reducerem.
 

@@ -66,6 +66,22 @@ zatwierdzają tę samą semantyczną akcję reducera.
 - Formularz zadania będzie zwykłym kontrolowanym formularzem React. Ze względu na małą liczbę pól nie będzie używana osobna biblioteka formularzy.
 - Reguły formularza pozostają zgodne z sekcją 9 w `SPEC.md`.
 - Style zostaną napisane za pomocą **CSS Modules** i zmiennych CSS.
+- Paleta i typografia odwzorowują Skillweb. Tokeny kolorów motywu jasnego są
+  zdefiniowane na `:root` w `src/styles/global.css`, a ciemnego pod
+  `:root[data-theme='dark']`. Komponenty korzystają wyłącznie z tokenów
+  semantycznych (np. `--color-accent` dla tekstu, `--color-accent-fill` i
+  `--color-on-accent` dla wypełnionych przycisków).
+- Fonty Inter, Space Grotesk i JetBrains Mono są hostowane razem z aplikacją
+  przez pakiety `@fontsource-variable/*`, dzięki czemu aplikacja nie wysyła
+  zapytań do zewnętrznych serwerów fontów, a zestawy `latin-ext` obsługują
+  polskie znaki.
+- Motyw (`src/theme/`) jest niezależny od `AppState`. Preferencja `system`,
+  `light` albo `dark` trafia do klucza `organizer-tygodnia:theme`. Skrypt
+  startowy w `index.html` ustawia `data-theme`, `data-theme-preference` i
+  `color-scheme` przed pierwszym renderem, a `ThemeMenu` czyta preferencję z
+  atrybutu przez `useSyncExternalStore` i w trybie automatycznym nasłuchuje
+  zmian `prefers-color-scheme`. Test jednostkowy uruchamia skrypt z
+  `index.html`, aby wykryć jego rozjazd z `src/theme/theme.ts`.
 - Nie będzie używany Tailwind ani rozbudowana biblioteka komponentów UI.
 - Interfejs powinien korzystać z semantycznego HTML oraz czytelnych etykiet kontrolek.
 
